@@ -1,6 +1,7 @@
 {
   "expo": {
     "name": "rn-spotify-app",
+    "scheme": "https",
     "slug": "rn-spotify-app",
     "version": "1.0.0",
     "orientation": "portrait",
