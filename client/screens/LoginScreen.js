@@ -2,44 +2,61 @@ import React, {useEffect, useState} from 'react';
 import { View, StyleSheet, Text, KeyboardAvoidingView, Image } from 'react-native';
 import LoginButton from '../components/Login/LoginButton';
 import Colors from '../constants/Colors';
-// import * as WebBrowser from 'expo-web-browser';
-// import { makeRedirectUri, useAuthRequest } from 'expo-auth-session';
-import * as AuthSession from 'expo-auth-session';
-import {CLIENT_ID, CLIENT_SECRET, REDIRECT_URI} from 'react-native-dotenv';
-import axios from 'axios';
+import { useDispatch } from 'react-redux';
+import {refreshTokens, getUserData} from '../../store/actions/auth';
+// import { getUserData, refreshTokens, getTokens } from '../../server/index';
+
 
 
 const LoginScreen = props => {
 
-const handleLogin = async () => {
-    const redirectUrl = AuthSession.getRedirectUrl({ useProxy: true });
-    const response = await AuthSession.startAsync({
-        authUrl: `https://accounts.spotify.com/authorize?client_id=${CLIENT_ID}&redirect_uri=${encodeURIComponent(redirectUrl)}&scope=user-read-email&response_type=token`,
-    });
+    const [error, setError] = useState();
 
-    if (response.type !== 'success') {
-        console.log(response.type);
-        this.setState({ didError: true });
-      } else {
-        const userInfo = await axios.get(`https://api.spotify.com/v1/me`, {
-          headers: {
-            "Authorization": `Bearer ${response.params.access_token}`
-          }
-        });
-        props.navigation.navigate('Tabs');
-        console.log(userInfo);
-      }
-}
+    const dispatch = useDispatch();
+    let action = refreshTokens();
 
+    const authHandler = async () => {
 
+        setError(null);
+        try {
+            await dispatch(action);
+            const accessToken = await getUserData('accessToken');
+            const expiration = await getUserData('expirationTime');
+            console.log(accessToken)
+            console.log(expiration)
+            if (accessToken) {
+                props.navigation.navigate('Tabs');
+            }
+        } catch (err) {
+            setError(err.message);
+        }
 
+    };
 
+    // const [token, setToken] = useState(false);
 
+    // const login = async () => {
+        // const tokenExpirationTime = await getUserData('expirationTime');
+        // try {   
+
+        //     if (!tokenExpirationTime || new Date().getTime() > tokenExpirationTime) {
+        //         await refreshTokens();
+        //     } else {
+        //         setToken(true);
+        //     }
+
+        // } catch (err) {
+        //     console.error(err);
+        // }
+
+    // }
+
+    
     return (
         <View style={styles.screen}>
             <Image resizeMode="cover" style={styles.image} source={require('../../assets/images/SpotifyIcon.png')} />
             <Text style={styles.title}>Spotify Insight</Text>
-            <LoginButton onPress={handleLogin}>LOG IN TO SPOTIFY</LoginButton>
+            <LoginButton onPress={authHandler}>LOG IN TO SPOTIFY</LoginButton>
         </View>
     );
 

@@ -1,12 +1,15 @@
 import React from 'react';
 import { View, Text, StyleSheet } from 'react-native';
-
+import { getUser } from '../../../store/actions/auth';
 
 const ProfileScreen = props => {
+
+    getUser();
 
     return (
         <View style={styles.screen}>
             <Text style={styles.title}>Profile Screen</Text>
+            <Image  />
         </View>
     );
 
