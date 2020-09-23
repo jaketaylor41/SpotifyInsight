@@ -9,9 +9,12 @@ import { Provider } from 'react-redux';
 import ReduxThunk from 'redux-thunk';
 
 import authReducer from './store/reducers/auth';
+import spotifyReducer from './store/reducers/spotifyData';
 
 const rootReducer = combineReducers({
-    auth: authReducer
+    auth: authReducer,
+    spotifyData: spotifyReducer
+
 });
 
 const store = createStore(rootReducer, applyMiddleware(ReduxThunk));

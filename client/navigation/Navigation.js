@@ -22,11 +22,11 @@ import TopTracksScreen from '../screens/Tabs/TopTracksScreen';
 
 const TabNavigator = createBottomTabNavigator(
     {
-        Playlists: PlaylistsScreen,
         Profile: ProfileScreen,
-        Recents: RecentScreen,
         TopArtists: TopArtistsScreen,
-        TopTracks: TopTracksScreen
+        TopTracks: TopTracksScreen,
+        Playlists: PlaylistsScreen,
+        Recents: RecentScreen
     }
 );
 

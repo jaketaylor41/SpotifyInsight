@@ -14,7 +14,7 @@ export default (state = initialState, action) => {
                 accessToken: action.accessToken,
                 refreshToken: action.refreshToken
             };
-            default:
-                return state;
+        default:
+            return state;
     }
 }

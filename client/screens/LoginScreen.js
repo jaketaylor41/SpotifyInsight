@@ -3,53 +3,34 @@ import { View, StyleSheet, Text, KeyboardAvoidingView, Image } from 'react-nativ
 import LoginButton from '../components/Login/LoginButton';
 import Colors from '../constants/Colors';
 import { useDispatch } from 'react-redux';
-import {refreshTokens, getUserData} from '../../store/actions/auth';
-// import { getUserData, refreshTokens, getTokens } from '../../server/index';
-
+import {refreshTokens, getTokens,  getUserData} from '../../store/actions/auth';
+import AsyncStorage from '@react-native-community/async-storage';
 
 
 const LoginScreen = props => {
 
-    const [error, setError] = useState();
+    const [accessTokenAvailable, setAccessTokenAvailable] = useState(false);
 
     const dispatch = useDispatch();
     let action = refreshTokens();
 
     const authHandler = async () => {
 
-        setError(null);
+        // await AsyncStorage.removeItem('accessToken');
+        // await AsyncStorage.removeItem('expirationTime');
+        // await AsyncStorage.removeItem('refreshToken');
         try {
-            await dispatch(action);
-            const accessToken = await getUserData('accessToken');
-            const expiration = await getUserData('expirationTime');
-            console.log(accessToken)
-            console.log(expiration)
-            if (accessToken) {
-                props.navigation.navigate('Tabs');
+                const tokenExpirationTime = await getUserData('expirationTime');
+                if (!tokenExpirationTime || new Date().getTime() > tokenExpirationTime) {
+                    await dispatch(action);
+                } else {
+                    props.navigation.navigate('Tabs');
+                }
+            } catch (err) {
+                console.log(err);
             }
-        } catch (err) {
-            setError(err.message);
-        }
 
     };
-
-    // const [token, setToken] = useState(false);
-
-    // const login = async () => {
-        // const tokenExpirationTime = await getUserData('expirationTime');
-        // try {   
-
-        //     if (!tokenExpirationTime || new Date().getTime() > tokenExpirationTime) {
-        //         await refreshTokens();
-        //     } else {
-        //         setToken(true);
-        //     }
-
-        // } catch (err) {
-        //     console.error(err);
-        // }
-
-    // }
 
     
     return (
