@@ -5,7 +5,7 @@ import * as Font from 'expo-font';
 import { AppLoading } from 'expo';
 import Navigation from './client/navigation/Navigation';
 import { createStore, combineReducers, applyMiddleware } from 'redux';
-import { Provider } from 'react-redux';
+import { Provider, useDispatch } from 'react-redux';
 import ReduxThunk from 'redux-thunk';
 
 import authReducer from './store/reducers/auth';
@@ -33,7 +33,6 @@ const fetchFonts = () => {
 export default function App() {
   
   const [dataLoaded, setDataLoaded] = useState(false);
-
 
   
   if (!dataLoaded) {

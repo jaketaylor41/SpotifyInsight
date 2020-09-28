@@ -1,34 +1,89 @@
 import React from 'react';
-
+import { Button } from 'react-native';
 import { createAppContainer, createSwitchNavigator } from 'react-navigation';
 import { createStackNavigator } from 'react-navigation-stack';
-import { createBottomTabNavigator } from 'react-navigation-tabs';
+
 import LoginScreen from '../screens/LoginScreen';
 import PlaylistsScreen from '../screens/Tabs/PlaylistsScreen';
 import ProfileScreen from '../screens/Tabs/ProfileScreen';
 import RecentScreen from '../screens/Tabs/RecentScreen';
 import TopArtistsScreen from '../screens/Tabs/TopArtistsScreen';
 import TopTracksScreen from '../screens/Tabs/TopTracksScreen';
+import AuthLoadingScreen from '../screens/AuthLoadingScreen';
+
+import { Platform } from 'react-native';
+
+import Colors from '../constants/Colors';
+import { FontAwesome, Entypo, Ionicons, MaterialCommunityIcons } from '@expo/vector-icons';
+import { createMaterialBottomTabNavigator } from 'react-navigation-material-bottom-tabs';
 
 
 
 
 
 //Route Name: Screen Component to Route To
-// const StackNavigator = createStackNavigator({
-
-// });
-
-
-const TabNavigator = createBottomTabNavigator(
+const ProfileNavigator = createStackNavigator(
     {
-        Profile: ProfileScreen,
-        TopArtists: TopArtistsScreen,
-        TopTracks: TopTracksScreen,
-        Playlists: PlaylistsScreen,
-        Recents: RecentScreen
+        UserProfile: ProfileScreen
+    },
+    {
+        defaultNavigationOptions: {
+            headerStyle: {
+                backgroundColor: Colors.primaryBgColor,
+                shadowColor: 'transparent'
+
+            },
+            headerTitle: ''
+        }
     }
 );
+
+
+const TabNavigator = createMaterialBottomTabNavigator(
+    {
+        Profile: {screen: ProfileNavigator, navigationOptions: {
+            tabBarIcon: (tabInfo) => {
+                return <FontAwesome name="user" size={24} color={tabInfo.tintColor}/>;
+            },
+            
+        }},
+        TopArtists: {screen: TopArtistsScreen, navigationOptions: {
+            tabBarIcon: (tabInfo) => {
+                return <Entypo name="modern-mic" size={24} color={tabInfo.tintColor}/>;
+            },
+            title: 'Top Artists',
+        }},
+        TopTracks: {screen: TopTracksScreen, navigationOptions: {
+            tabBarIcon: (tabInfo) => {
+                return <FontAwesome name="music" size={24} color={tabInfo.tintColor}/>;
+            },
+            title: 'Top Tracks',
+        }},
+        Playlists: {screen: PlaylistsScreen, navigationOptions: {
+            tabBarIcon: (tabInfo) => {
+                return <MaterialCommunityIcons name="playlist-music" size={25} color={tabInfo.tintColor}/>;
+            },
+            title: 'Playlists',
+        }},
+        Recents: {screen: RecentScreen, navigationOptions: {
+            tabBarIcon: (tabInfo) => {
+                return <Entypo name="back-in-time" size={24} color={tabInfo.tintColor}/>;
+            },
+            title: 'Recents',
+        }},
+    },
+    {
+        activeColor: '#fff',
+        inactiveColor: 'grey',
+        barStyle: {
+            backgroundColor: '#000'
+        }
+    }
+);
+
+
+
+
 
 const AuthStackNavigator = createStackNavigator(
     {
@@ -43,8 +98,12 @@ const AuthStackNavigator = createStackNavigator(
 
 const AuthSwitchNavigator = createSwitchNavigator(
     {
+        Starter: AuthLoadingScreen,
         Auth: AuthStackNavigator,
         Tabs: TabNavigator
+    },
+    {
+        initialRouteName: 'Starter'
     },
     {
       defaultNavigationOptions: {

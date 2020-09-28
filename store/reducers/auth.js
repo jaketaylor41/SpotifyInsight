@@ -1,5 +1,5 @@
 
-import { LOGIN } from '../actions/auth';
+import { AUTHENTICATE } from '../actions/auth';
 
 const initialState = {
     accessToken: null,
@@ -9,7 +9,7 @@ const initialState = {
 
 export default (state = initialState, action) => {
     switch (action.type) {
-        case LOGIN:
+        case AUTHENTICATE:
             return {
                 accessToken: action.accessToken,
                 refreshToken: action.refreshToken

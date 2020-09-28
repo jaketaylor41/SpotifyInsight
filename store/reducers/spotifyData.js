@@ -3,7 +3,8 @@ import { USER_INFO } from '../actions/spotifyData';
 
 const initialState = {
     user: null,
-    image: null
+    playlists: null,
+    following: null
 }
 
 
@@ -12,7 +13,9 @@ export default (state = initialState, action) => {
         case USER_INFO:
             return {
                 user: action.user,
-                image: action.image
+                playlists: action.playlists,
+                following: action.following,
+                topArtists: action.topArtists
             };
         default:
             return state;

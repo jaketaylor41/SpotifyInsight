@@ -4,27 +4,41 @@ import axios from 'axios';
 import { encode as btoa } from 'base-64';
 import AsyncStorage from '@react-native-community/async-storage';
 
-export const LOGIN = 'LOGIN';
+export const AUTHENTICATE = 'AUTHENTICATE';
 
-export const setUserData = async (key, value) => {
-    try {
-        
-        await AsyncStorage.setItem(key, value);
-    } catch (err) {
-        console.error(err);
-    }
+const saveDataToStorage = (accessToken, refreshToken, expirationTime) => {
+    AsyncStorage.setItem(
+        'userData',
+        JSON.stringify({
+            accessToken: accessToken,
+            refreshToken: refreshToken,
+            expirationTime: expirationTime
+        })
+    );
 }
 
-export const getUserData = async (key) => {
-    try {
-        const value = await AsyncStorage.getItem(key);
-        if (value !== null) {
-            return value;
-        }
-    } catch (err) {
-        console.error(err);
-    }
-}
+export const authenticate = (accessToken, refreshToken) => {
+    return {type: AUTHENTICATE, accessToken: accessToken, refreshToken: refreshToken};
+};
+
+// export const setUserData = async (key, value) => {
+//     try {
+//         await AsyncStorage.setItem(key, value);
+//     } catch (err) {
+//         console.error(err);
+//     }
+// }
+
+// export const getUserData = async (key) => {
+//     try {
+//         const value = await AsyncStorage.getItem(key);
+//         if (value !== null) {
+//             return value;
+//         }
+//     } catch (err) {
+//         console.error(err);
+//     }
+// }
 
 
 const scopesArr = 
@@ -82,14 +96,15 @@ export const getTokens = () => {
                 expires_in: expiresIn,
             } = responseJson;
 
-            console.log(responseJson);
+            //console.log(responseJson);
 
+            //const expirationValue = JSON.stringify(expirationTime);
+            // await setUserData('accessToken', accessToken);
+            // await setUserData('refreshToken', refreshToken);
+            // await setUserData('expirationTime', expirationValue);
             const expirationTime = new Date().getTime() + expiresIn * 1000;
-            const expirationValue = JSON.stringify(expirationTime);
-            await setUserData('accessToken', accessToken);
-            await setUserData('refreshToken', refreshToken);
-            await setUserData('expirationTime', expirationValue);
-            dispatch({type: LOGIN, accessToken: accessToken, refreshToken: refreshToken});
+            saveDataToStorage(accessToken, refreshToken, expirationTime);
+            dispatch(authenticate(accessToken, refreshToken));
     
         } catch (err) {
             console.error(err);
@@ -102,36 +117,42 @@ export const refreshTokens = () => {
     return async dispatch => {
         try {
             const credsB64 = btoa(`${CLIENT_ID}:${CLIENT_SECRET}`);
-            const refreshToken = await getUserData('refreshToken');
+            const userData = await AsyncStorage.getItem('userData');
+            const transformedData = JSON.parse(userData);
+            const refresh = transformedData.refreshToken;
             const response = await fetch('https://accounts.spotify.com/api/token', {
                 method: 'POST',
                 headers: {
                     Authorization: `Basic ${credsB64}`,
                     'Content-Type': 'application/x-www-form-urlencoded',
                 },
-                body: `grant_type=refresh_token&refresh_token=${refreshToken}`,
+                body: `grant_type=refresh_token&refresh_token=${refresh}`,
             });
             const responseJson = await response.json();
-            if (responseJson.error) {
-                await getTokens();
-            } else {
+            //console.log(responseJson)
+            // if (responseJson.error) {
+            //     await getTokens();
+            //     //console.log("REFRESHTOKENS() " + responseJson.error)
+            // } else {
                 const {
                     access_token: newAccessToken,
-                    refresh_token: newRefreshToken,
                     expires_in: expiresIn,
                 } = responseJson;
 
-                console.log(responseJson)
+                //console.log(responseJson)
 
+                // const expirationTime = new Date().getTime() + expiresIn * 1000;
+                // const expirationValue = JSON.stringify(expirationTime);
+                // await setUserData('accessToken', newAccessToken);
+                // if (newRefreshToken) {
+                //     await setUserData('refreshToken', newRefreshToken);
+                // }
+                // await setUserData('expirationTime', expirationValue);
                 const expirationTime = new Date().getTime() + expiresIn * 1000;
-                const expirationValue = JSON.stringify(expirationTime);
-                await setUserData('accessToken', newAccessToken);
-                if (newRefreshToken) {
-                    await setUserData('refreshToken', newRefreshToken);
-                }
-                await setUserData('expirationTime', expirationValue);
-                dispatch({type: LOGIN, accessToken: newAccessToken, refreshToken: newRefreshToken});
-            }
+                console.log('REFRESH FUNC ' + expirationTime)
+                saveDataToStorage(newAccessToken, refresh, expirationTime);
+                dispatch(authenticate(newAccessToken, refresh));
+            //}
         } catch (err) {
             console.error(err);
         }

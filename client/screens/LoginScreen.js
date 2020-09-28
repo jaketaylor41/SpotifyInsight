@@ -2,36 +2,28 @@ import React, {useEffect, useState} from 'react';
 import { View, StyleSheet, Text, KeyboardAvoidingView, Image } from 'react-native';
 import LoginButton from '../components/Login/LoginButton';
 import Colors from '../constants/Colors';
-import { useDispatch } from 'react-redux';
-import {refreshTokens, getTokens,  getUserData} from '../../store/actions/auth';
+import { useDispatch, useSelector } from 'react-redux';
+import {refreshTokens, getTokens, getUserData} from '../../store/actions/auth';
 import AsyncStorage from '@react-native-community/async-storage';
+// import { getUserData, refreshTokens, getTokens } from '../../server/index';
+
 
 
 const LoginScreen = props => {
 
-    const [accessTokenAvailable, setAccessTokenAvailable] = useState(false);
-
     const dispatch = useDispatch();
-    let action = refreshTokens();
+    let action = getTokens();
 
     const authHandler = async () => {
 
-        // await AsyncStorage.removeItem('accessToken');
-        // await AsyncStorage.removeItem('expirationTime');
-        // await AsyncStorage.removeItem('refreshToken');
         try {
-                const tokenExpirationTime = await getUserData('expirationTime');
-                if (!tokenExpirationTime || new Date().getTime() > tokenExpirationTime) {
-                    await dispatch(action);
-                } else {
-                    props.navigation.navigate('Tabs');
-                }
-            } catch (err) {
-                console.log(err);
-            }
+            await dispatch(action);
+            props.navigation.navigate('Tabs');
 
+        } catch (err) {
+            console.log("LOGIN SCREEN" + err);
+        }
     };
-
     
     return (
         <View style={styles.screen}>
