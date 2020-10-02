@@ -3,13 +3,13 @@ import React, {useState, useEffect} from 'react';
 import { Button, StyleSheet, Text, View } from 'react-native';
 import * as Font from 'expo-font';
 import { AppLoading } from 'expo';
-import Navigation from './client/navigation/Navigation';
 import { createStore, combineReducers, applyMiddleware } from 'redux';
 import { Provider, useDispatch } from 'react-redux';
 import ReduxThunk from 'redux-thunk';
 
 import authReducer from './store/reducers/auth';
 import spotifyReducer from './store/reducers/spotifyData';
+import NavigationContainer from './client/navigation/NavigationContainer';
 
 const rootReducer = combineReducers({
     auth: authReducer,
@@ -48,7 +48,7 @@ export default function App() {
     return (
     <View style={styles.container}>
       <Provider store={store}>
-        <Navigation />
+        <NavigationContainer />
       </Provider>
     </View>
   );

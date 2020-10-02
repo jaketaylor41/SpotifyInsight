@@ -1,16 +1,21 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
+
 import { View, Text, StyleSheet, ActivityIndicator, Image } from 'react-native';
+import { FlatList, ScrollView } from 'react-native-gesture-handler';
+import { HeaderButtons, Item } from 'react-navigation-header-buttons';
+import { SafeAreaView } from 'react-native-safe-area-context';
 import Colors from '../../constants/Colors';
-import { dispatchUser } from '../../../store/actions/spotifyData';
-import { getUserData, refreshTokens } from '../../../store/actions/auth';
-import { FontAwesome } from '@expo/vector-icons'; 
+
+import { dispatchUser, getTrackFeatures, getArtistTopTracks } from '../../../store/actions/spotifyData';
+import AsyncStorage from '@react-native-community/async-storage';
+
 import ProfileHeader from '../../components/Profile/ProfileHeader';
 import ProfileStats from '../../components/Profile/ProfileStats';
-import { FlatList, ScrollView } from 'react-native-gesture-handler';
-import AsyncStorage from '@react-native-community/async-storage';
-import { HeaderButtons, Item } from 'react-navigation-header-buttons';
 import HeaderButton from '../../components/UI/HeaderButton';
+import TopArtists from '../../components/Profile/TopArtists';
+import TopTracks from '../../components/Profile/TopTracks';
+import Playlists from '../../components/Profile/Playlists';
 
 
 
@@ -21,31 +26,34 @@ const ProfileScreen = props => {
     const playlists = useSelector(state => state.spotifyData.playlists);
     const following = useSelector(state => state.spotifyData.following);
     const topArtists = useSelector(state => state.spotifyData.topArtists);
+    const topTracks = useSelector(state => state.spotifyData.topTracks);
     const [isLoading, setIsLoading] = useState(false);
-    const [isRefreshing, setIsRefreshing] = useState(false);
 
 
     const loadUserProfile = useCallback(async () => {
+
       console.log('PROFILE TAB LOADED');
-      setIsRefreshing(true);
+      //console.log(topTracks)
+      setIsLoading(true);
       try {
         await dispatch(dispatchUser());
       } catch (err) {
         console.log(err);
+        props.navigation.navigate('Starter');
       }
-      setIsRefreshing(false);
+      setIsLoading(false);
     }, [dispatch, setIsLoading]);
 
-    useEffect(() => {
-      const willFocus = props.navigation.addListener(
-        'willFocus',
-        loadUserProfile
-      );
+    // useEffect(() => {
+    //   const willFocus = props.navigation.addListener(
+    //     'willFocus',
+    //     loadUserProfile
+    //   );
   
-      return () => {
-        willFocus.remove();
-      };
-    }, [loadUserProfile]);
+    //   return () => {
+    //     willFocus.remove();
+    //   };
+    // }, [loadUserProfile]);
     
 
     useEffect(() => {
@@ -57,12 +65,25 @@ const ProfileScreen = props => {
     
 		}, [dispatch, loadUserProfile]);
 
+    const selectArtistHandler = async (id) => {
+      await dispatch(getArtistTopTracks(id));
+      props.navigation.navigate('Artist', {
+        artistId: id
+      });
+    };
+
+    const selectTrackHandler = async (id) => {
+      await dispatch(getTrackFeatures(id));
+      props.navigation.navigate('Track', {
+        trackId: id
+      });
+    };
 		
 
 		if (isLoading) {
 			return (
 				<View style={styles.centered}>
-					<ActivityIndicator size="large" />
+					<ActivityIndicator size="small" />
 				</View>
 			);
 		}
@@ -77,38 +98,62 @@ const ProfileScreen = props => {
 
 
     return (
-      <View style={styles.screen}>
-        <ScrollView style={styles.screen} contentContainerStyle={{ flexGrow: 1, justifyContent: 'flex-start' }}>
+      <SafeAreaView style={styles.screen}>
+        <ScrollView nestedScrollEnabled={true} style={styles.screen} contentContainerStyle={{ flexGrow: 1, justifyContent: 'flex-start' }}>
             <View>
-                <ProfileHeader image={user.images[0].url} name={user.display_name} />
+              <ProfileHeader image={user.images[0].url} name={user.display_name} />
             </View>
             <View>
-                <ProfileStats followers={user.followers.total} numPlaylists={playlists.length} following={following.artists.items.length} />
+              <ProfileStats followers={user.followers.total} numPlaylists={playlists.length} following={following.artists.items.length} />
             </View>
             <View>
-              <View>
-                <Text style={styles.topArtistsTitle}>Top Artists of All Time</Text>
-              </View>
+            <View style={styles.titleContainer}>
+						  <Text style={styles.profileTitles}> Your Top Artists of All Time</Text>
+				    </View>
               <FlatList
                 keyExtractor={item => item.id}
+                contentContainerStyle={{marginLeft: 12, marginTop: 20}}
                 horizontal={true}
                 data={topArtists.items}
                 renderItem={({item}) => {
                   return (
-                    <View style={styles.artistFlatListItem}>
-                      <View style={styles.artworkContainer}>
-                        <Image style={styles.artwork} source={{uri: item.images[2].url}} />
-                      </View>
-                      <View>
-                        <Text style={styles.artistName}>{item.name}</Text>
-                      </View>
-                    </View>
-                  )
+                    <TopArtists image={item.images[0].url} name={item.name} onSelect={() => {
+                      selectArtistHandler(item.id);
+                    }} />
+                  );
                 }}
               />
             </View>
+            <View>
+            <View style={styles.titleContainer}>
+						  <Text style={styles.profileTitles}> Your Top Tracks of All Time</Text>
+				    </View>
+            <FlatList
+                keyExtractor={item => item.id}
+                contentContainerStyle={{marginLeft: 12, marginTop: 20}}
+                horizontal={true}
+                data={topTracks.items}
+                renderItem={({item}) => {
+                  return (
+                    <TopTracks image={item.album.images[0].url} name={item.name} onSelect={() => {
+                      selectTrackHandler(item.id);
+                    }} />
+                  )
+                }}
+            />
+            </View>
+              <View style={styles.titleContainer}>
+                <Text style={styles.profileTitles}>Your Playlists</Text>
+              </View>
+            <ScrollView contentContainerStyle={{marginLeft: 12, marginTop: 20}}>
+              {playlists.map((item, i) => {
+                return (
+                  <Playlists key={i} image={item.images[0].url} title={item.name} totalSongs={item.tracks.total} />
+                )
+              })}
+            </ScrollView>
         </ScrollView>
-      </View>
+      </SafeAreaView>
     );
 
 };
@@ -148,32 +193,14 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         backgroundColor: Colors.primaryBgColor
     },
-    artistFlatListItem: {
-      alignItems: 'center',
-      marginRight: 20
+    titleContainer: {
+      marginTop: 50,
     },
-    artwork: {
-      width: '100%',
-		  height: '100%'
-    },
-    topArtistsTitle: {
+    profileTitles: {
       color: '#fff',
       fontFamily: 'montserrat-bold',
       fontSize: 20,
-      marginTop: 50,
-      marginLeft: 10
-    },
-    artworkContainer: {
-      width: 160,
-      height: 160,
-      borderRadius: 200,
-      overflow: 'hidden',
-      marginTop: 30
-    },
-    artistName: {
-      color: '#fff',
-      fontFamily: 'montserrat-semi-bold',
-      paddingTop: 10
+      marginLeft: 12
     }
 });
 

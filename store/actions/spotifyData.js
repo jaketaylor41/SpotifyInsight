@@ -1,22 +1,19 @@
 import SpotifyWebAPI from 'spotify-web-api-js';
-import { getUserData, refreshTokens } from './auth';
 import AsyncStorage from '@react-native-community/async-storage';
+import { refreshTokens } from './auth';
 
 export const USER_INFO = 'USER_INFO';
+export const ARTIST = 'ARTIST';
+export const TRACK = 'TRACK';
 
 // Get Valid Spotify Obj
 export const getValidSPObj = async () => {
 	try {
 		const userData = await AsyncStorage.getItem('userData');
 		const transformedData = JSON.parse(userData);
-		// const expirationTime = transformedData.expirationTime;
-		// const expirationDate = new Date(expirationTime);
-		// if (!expirationDate || expirationDate <= new Date()) {
-		// 	await refreshTokens();
-		// }
 		const accessToken = transformedData.accessToken;
 		
-		var sp = new SpotifyWebAPI();
+		const sp = new SpotifyWebAPI();
 		await sp.setAccessToken(accessToken);
 		return sp;
 	
@@ -30,12 +27,10 @@ export const getValidSPObj = async () => {
 export const dispatchUser = () => {
 	return async dispatch => {
 		try {
-			const user = await getUserInfo();
-			const playlists = await getUserPlaylists();
-			const following = await getFollowedArtists();
-			const topArtists = await getTopArtists();
+			
+			const { user, followedArtists, playlists, topArtists, topTracks } = await getUserInfo();
 
-			dispatch({type: USER_INFO, user: user, playlists: playlists, following: following, topArtists: topArtists});
+			dispatch({type: USER_INFO, user: user, playlists: playlists, following: followedArtists, topArtists: topArtists, topTracks: topTracks });
 
 		} catch (err) {
 			throw err;
@@ -44,61 +39,102 @@ export const dispatchUser = () => {
 }
 
 
-// Get User
+// Get All User Info
 export const getUserInfo = async () => {
 	try {
-		const sp = await getValidSPObj();
-		const user = await sp.getMe();
-		return user;
+			const sp = await getValidSPObj();
+			const user = await sp.getMe();
+
+			// Get a List of Current Users Playlists
+			const { id: userId } = await sp.getMe();
+			const { items: playlists } = await sp.getUserPlaylists(userId, { limit: 50 });
+
+			// Get Followed Artists
+			const followedArtists = await sp.getFollowedArtists();
+
+			// Get a Users Top Artists
+			const topArtists = await sp.getMyTopArtists({time_range: 'long_term'});
+
+			// Get a Users Top Tracks
+			const topTracks = await sp.getMyTopTracks({time_range: 'long_term'});
+
+			return {
+				user: user,
+				playlists: playlists,
+				followedArtists: followedArtists,
+				topArtists: topArtists,
+				topTracks: topTracks
+			}
 
 	} catch (err) {
 		
 	}
 };
 
+// Get an Artist
+export const getArtist = (artistId) => {
+	return async dispatch => {
+		try {
+			const sp = await getValidSPObj();
+			const artist = await sp.getArtist(artistId);
+			
+			dispatch({type: ARTIST, artist: artist});
 
-// Get Followed Artists
-export const getFollowedArtists = async () => {
-	try {
-		const sp = await getValidSPObj();
-		const followedArtists = await sp.getFollowedArtists();
-		return followedArtists;
+			return artist;
 
-	} catch (err) {
-		throw err;
+		} catch (error) {
+			console.log(error)
+		}
+
 	}
 }
 
-// Get Users Recently Played Tracks
+// Get Artist Top Tracks
+export const getArtistTopTracks = (id) => {
+	return async dispatch => {
+		try {
+			const sp = await getValidSPObj();
+			const artistTopSongs = await sp.getArtistTopTracks(id, 'US');
 
 
-//Get a List of Current Users Playlists
-export const getUserPlaylists = async () => {
-	try {
-		const sp = await getValidSPObj();
-		const { id: userId } = await sp.getMe();
-		const { items: playlists } = await sp.getUserPlaylists(userId, { limit: 50 });
-		return playlists;
-
-	} catch (err) {
-		
+			dispatch({type: ARTIST, artistTopSongs: artistTopSongs});
+			
+		} catch (error) {
+			console.log(error)
+		}
 	}
 }
 
-// Get a Users Top Artists
-export const getTopArtists = async () => {
-	try {
+// Get Track Info
+export const getTrack = (id) => {
+	return async dispatch => {
+		try {
+			const sp = await getValidSPObj();
+			const track = await sp.getTrack(id);
 
-		const sp = await getValidSPObj();
-		const topArtists = await sp.getMyTopArtists({time_range: 'long_term'});
-		//console.log(topArtists)
-		return topArtists;
 
-	} catch (error) {
-		console.log(error);
+			dispatch({type: TRACK, track: track});
+			
+		} catch (error) {
+			console.log(error)
+		}
 	}
 }
 
-// Get a Users Top Tracks
+// Get Track Analysis
+export const getTrackFeatures = (id) => {
+	return async dispatch => {
+		try {
+			const sp = await getValidSPObj();
+			const trackFeatures = await sp.getAudioFeaturesForTrack(id);
 
-
+			dispatch({
+				type: TRACK,
+				trackFeatures: trackFeatures
+			});
+			
+		} catch (error) {
+			console.log(error)
+		}
+	}
+}

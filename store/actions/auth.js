@@ -21,25 +21,6 @@ export const authenticate = (accessToken, refreshToken) => {
     return {type: AUTHENTICATE, accessToken: accessToken, refreshToken: refreshToken};
 };
 
-// export const setUserData = async (key, value) => {
-//     try {
-//         await AsyncStorage.setItem(key, value);
-//     } catch (err) {
-//         console.error(err);
-//     }
-// }
-
-// export const getUserData = async (key) => {
-//     try {
-//         const value = await AsyncStorage.getItem(key);
-//         if (value !== null) {
-//             return value;
-//         }
-//     } catch (err) {
-//         console.error(err);
-//     }
-// }
-
 
 const scopesArr = 
     ['user-read-private',

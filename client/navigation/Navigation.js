@@ -10,6 +10,8 @@ import RecentScreen from '../screens/Tabs/RecentScreen';
 import TopArtistsScreen from '../screens/Tabs/TopArtistsScreen';
 import TopTracksScreen from '../screens/Tabs/TopTracksScreen';
 import AuthLoadingScreen from '../screens/AuthLoadingScreen';
+import ArtistProfileScreen from '../screens/Stack/ArtistProfileScreen';
+import TrackAnalysisScreen from '../screens/Stack/TrackAnalysisScreen';
 
 import { Platform } from 'react-native';
 
@@ -24,18 +26,26 @@ import { createMaterialBottomTabNavigator } from 'react-navigation-material-bott
 //Route Name: Screen Component to Route To
 const ProfileNavigator = createStackNavigator(
     {
-        UserProfile: ProfileScreen
-    },
+        UserProfile: {
+          screen: ProfileScreen
+        },
+        Artist: {
+          screen: ArtistProfileScreen
+				},
+				Track: {
+					screen: TrackAnalysisScreen
+				}
+	},
     {
-        defaultNavigationOptions: {
-            headerStyle: {
-                backgroundColor: Colors.primaryBgColor,
-                shadowColor: 'transparent'
-
-            },
-            headerTitle: ''
-        }
-    }
+			defaultNavigationOptions: {
+					headerStyle: {
+							backgroundColor: Colors.primaryBgColor,
+							shadowColor: 'transparent'
+					},
+					headerTitle: ''
+			},
+			headerMode: 'screen'
+	}
 );
 
 
@@ -80,9 +90,6 @@ const TabNavigator = createMaterialBottomTabNavigator(
         }
     }
 );
-
-
-
 
 
 const AuthStackNavigator = createStackNavigator(
