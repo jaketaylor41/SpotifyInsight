@@ -12,6 +12,7 @@ import TopTracksScreen from '../screens/Tabs/TopTracksScreen';
 import AuthLoadingScreen from '../screens/AuthLoadingScreen';
 import ArtistProfileScreen from '../screens/Stack/ArtistProfileScreen';
 import TrackAnalysisScreen from '../screens/Stack/TrackAnalysisScreen';
+import PlaylistDetailScreen from '../screens/Stack/PlaylistDetailScreen';
 
 import { Platform } from 'react-native';
 
@@ -34,6 +35,9 @@ const ProfileNavigator = createStackNavigator(
 				},
 				Track: {
 					screen: TrackAnalysisScreen
+				},
+				Playlist: {
+					screen: PlaylistDetailScreen
 				}
 	},
     {

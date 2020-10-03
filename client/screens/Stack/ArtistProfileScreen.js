@@ -1,20 +1,22 @@
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState } from 'react';
 import { View, StyleSheet, Image, Text, SafeAreaView, ActivityIndicator, Dimensions } from 'react-native';
-import { useSelector, useDispatch } from 'react-redux';
+import { useSelector } from 'react-redux';
 import ArtistProfile from '../../components/ArtistProfile/ArtistProfile';
 import { getArtistTopTracks } from '../../../store/actions/spotifyData';
 import { ScrollView } from 'react-native-gesture-handler';
 import Colors from '../../constants/Colors';
+import { convertDuration } from '../../../util';
+
 
 
 const ArtistProfileScreen = props => {
 
 	const artistId = props.navigation.getParam('artistId');
-	const [isLoading, setIsLoading] = useState(false);
 	const songs = useSelector(state => state.spotifyData.artistTopSongs);
 	const selectedArtist = useSelector(state => 
 		state.spotifyData.topArtists.items.find(artist => artist.id === artistId)
-	);
+		);
+	const [isLoading, setIsLoading] = useState(false);
 
 
 	if (isLoading) {
@@ -23,12 +25,6 @@ const ArtistProfileScreen = props => {
 				<ActivityIndicator size="large" />
 			</View>
 		);
-	}
-
-	const convertDuration = (ms) => {
-		const minutes = Math.floor(ms / 60000);
-		const seconds = ((ms % 60000) / 1000).toFixed(0);
-		return minutes + ':' + (seconds < 10 ? '0' : '') + seconds;
 	}
 
 
@@ -72,7 +68,6 @@ const styles = StyleSheet.create({
 	screen: {
 		flex: 1,
 		backgroundColor: Colors.primaryBgColor,
-		
 	},
 	topSong: {
 		flexDirection: 'row',

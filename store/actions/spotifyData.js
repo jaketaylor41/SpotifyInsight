@@ -5,6 +5,7 @@ import { refreshTokens } from './auth';
 export const USER_INFO = 'USER_INFO';
 export const ARTIST = 'ARTIST';
 export const TRACK = 'TRACK';
+export const PLAYLIST = 'PLAYLIST';
 
 // Get Valid Spotify Obj
 export const getValidSPObj = async () => {
@@ -131,6 +132,24 @@ export const getTrackFeatures = (id) => {
 			dispatch({
 				type: TRACK,
 				trackFeatures: trackFeatures
+			});
+			
+		} catch (error) {
+			console.log(error)
+		}
+	}
+}
+
+// Get User Playlists
+export const getPlaylist = (playlistId) => {
+	return async dispatch => {
+		try {
+			const sp = await getValidSPObj();
+			const playlist = await sp.getPlaylist(playlistId);
+
+			dispatch({
+				type: PLAYLIST,
+				playlist: playlist
 			});
 			
 		} catch (error) {

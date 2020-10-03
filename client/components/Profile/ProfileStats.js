@@ -37,18 +37,12 @@ const styles = StyleSheet.create({
         justifyContent: 'space-evenly',
         paddingTop: 15
     },
-
-    stat: {
-
-    },
-
     numFollowers: {
         fontFamily: 'montserrat-semi-bold',
         color: Colors.green,
         fontSize: 18,
         textAlign: 'center'
     },
-
     headerText: {
         fontFamily: 'montserrat-semi-bold',
         color: 'grey',

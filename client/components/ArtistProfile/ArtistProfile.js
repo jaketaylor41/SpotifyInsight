@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useState} from 'react';
 import { View, StyleSheet, Image, Text, Dimensions  } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
 
@@ -6,12 +6,23 @@ import { LinearGradient } from 'expo-linear-gradient';
 const TopArtist = props => {
 
 	const formatNum = new Intl.NumberFormat();
+	const [imgWidth, setImageWidth] = useState();
+	const [imgHeight, setImageHeight] = useState();
+
+	Image.getSize(props.image, (width, height) => {
+		// calculate image width and height 
+		const screenWidth = Dimensions.get('window').width
+		const scaleFactor = width / screenWidth;
+		const imageHeight = height / scaleFactor;
+		setImageWidth(screenWidth);
+		setImageHeight(imageHeight);
+	});
 
     return (
 			<View style={styles.container}>
 				<View>
 					<View style={styles.imageContainer}>
-						<Image resizeMode={'cover'} style={styles.avatar} source={{uri: props.image}} alt="avatar" />
+						<Image resizeMode={'cover'} style={{width: imgWidth, height: imgHeight}} source={{uri: props.image}} alt="avatar" />
 						<View style={styles.textContainer}>
 							<LinearGradient colors={['transparent', 'rgba(0,0,0,0.8)']}>
 								<Text style={styles.name}>{props.name}</Text>
@@ -48,10 +59,6 @@ const styles = StyleSheet.create({
 		height: 350,
 		overflow: 'hidden',
   },
-  avatar: {
-		width: '100%',
-		height: '100%'
-	},
 	textContainer: {
 		position: 'absolute',
 		bottom: 0,

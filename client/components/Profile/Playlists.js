@@ -1,15 +1,23 @@
 import React from 'react';
-import { View, StyleSheet, Text, Image } from 'react-native';
+import { View, StyleSheet, Text, Image, TouchableOpacity, TouchableNativeFeedback, Platform } from 'react-native';
 
 
 const Playlists = props => {
 
+	let TouchableCmp = TouchableOpacity;
+
+  if (Platform.OS === 'android' && Platform.Version >= 21) {
+    TouchableCmp = TouchableNativeFeedback;
+  }
+
     return (
 			<View style={styles.container}>
 				<View style={styles.item}>
+				<TouchableCmp onPress={props.onSelect} useForeground>
 					<View style={styles.imageContainer}>
 						<Image style={styles.playlistCoverArt} source={{uri: props.image}} />
 					</View>
+				</TouchableCmp>
 					<View style={styles.titleContainer}>
 						<Text style={styles.playlistTitle}>{props.title}</Text>
 						<Text style={styles.totalSongs}>{props.totalSongs} Songs</Text>

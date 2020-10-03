@@ -1,5 +1,5 @@
 
-import { USER_INFO, ARTIST, TRACK } from '../actions/spotifyData';
+import { USER_INFO, ARTIST, TRACK, PLAYLIST } from '../actions/spotifyData';
 
 const initialState = {
     user: null,
@@ -9,7 +9,8 @@ const initialState = {
     topTracks: null,
     artistTopSongs: null,
     trackAnalysis: null,
-    trackFeatures: null
+    trackFeatures: null,
+    playlist: null
 }
 
 
@@ -33,6 +34,11 @@ export default (state = initialState, action) => {
             return {
                 ...state,
                 trackFeatures: action.trackFeatures
+            };
+        case PLAYLIST:
+            return {
+                ...state,
+                playlist: action.playlist
             }
         default:
             return state;

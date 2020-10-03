@@ -1,49 +1,78 @@
-import React from 'react';
+import React, {useState} from 'react';
 import { View, StyleSheet, Image, Text, Dimensions  } from 'react-native';
-import { BarChart, XAxis, YAxis, Grid } from 'react-native-svg-charts';
-import * as scale from 'd3-scale';
+import { LinearGradient } from 'expo-linear-gradient';
 import Colors from '../../constants/Colors';
 
 const TrackAnalysis = props => {
 
-	const deviceWidth = Dimensions.get('window');
-	const labelArr = ['acousticness', 'danceability', 'energy', 'instrumentalness', 'liveness', 'speechiness', 'valence'];
+	const [imgWidth, setImageWidth] = useState();
+	const [imgHeight, setImageHeight] = useState();
 
+	Image.getSize(props.image, (width, height) => {
+		// calculate image width and height 
+		const screenWidth = Dimensions.get('window').width
+		const scaleFactor = width / screenWidth;
+		const imageHeight = height / scaleFactor;
+		setImageWidth(screenWidth);
+		setImageHeight(imageHeight);
+	});
 
     return (
-			<View style={styles.container}>
-				<YAxis data={props.data} style={{ marginBottom: 30, paddingRight: 5, paddingLeft: 5 }} contentInset={{top: 10, bottom: 10}} svg={{fontSize: 10, fill: 'grey'}} />
-				<BarChart
-					style={{ flex: 1 }}
-					data={props.data}
-					contentInset={{ top: 10, bottom: 10, left: 10, right: 10 }}
-					yAccessor={({ item }) => item}
-					svg={{ fill: 'rgb(134, 65, 244)' }}
-					width={deviceWidth}
-				>
-				<XAxis
-					style={{}}
-					data={labelArr}
-					formatLabel={(index) => labelArr[index]}
-					contentInset={{ left: 30, right: 30, }}
-					svg={{ fontSize: 10, fill: '#000'}}
-				/>
-					
-				<Grid direction={Grid.Direction.BOTH}/>
-				</BarChart>
-			
+			<View>
+				<View style={styles.trackIntroContainer}>
+					<View style={styles.imageContainer}>
+						<Image resizeMode={'cover'} style={{width: imgWidth, height: imgHeight}} source={{uri: props.image}} alt="avatar" />
+						<View style={styles.textContainer}>
+							<LinearGradient colors={['transparent', 'rgba(0,0,0,0.8)']}>
+								<View>
+									<Text style={styles.title}>{props.name}</Text>
+								</View>
+								<View>
+									<Text style={styles.artist}>{props.artist}</Text>
+								</View>
+							</LinearGradient>
+						</View>
+					</View>
+				</View>
 			</View>
     );
-
 };
 
 
+const deviceWidth = Dimensions.get('window');
 const styles = StyleSheet.create({
 
-	container: {
-		height: 300,
-		flexDirection: 'row',
-		backgroundColor: '#fff'
+	trackIntroContainer: {
+		marginBottom: 50
+	},
+	imageContainer: {
+		width: deviceWidth.width,
+		height: 350,
+		overflow: 'hidden',
+  },
+	textContainer: {
+		position: 'absolute',
+		bottom: 0,
+		left: 0,
+		width: '100%',
+	},
+	title: {
+		textAlign: 'center',
+		fontFamily: 'montserrat-bold',
+		color: '#fff',
+		paddingTop: 15,
+		fontSize: 40,
+		marginLeft: 12,
+
+		textAlign: 'left',
+	},
+	artist: {
+		textAlign: 'center',
+		fontFamily: 'montserrat-semi-bold',
+		color: '#fff',
+		textAlign: 'left',
+		marginLeft: 12,
+		marginBottom: 5,
 	}
 
 });

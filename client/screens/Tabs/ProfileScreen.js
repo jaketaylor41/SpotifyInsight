@@ -7,7 +7,7 @@ import { HeaderButtons, Item } from 'react-navigation-header-buttons';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import Colors from '../../constants/Colors';
 
-import { dispatchUser, getTrackFeatures, getArtistTopTracks } from '../../../store/actions/spotifyData';
+import { dispatchUser, getTrackFeatures, getArtistTopTracks, getPlaylist } from '../../../store/actions/spotifyData';
 import AsyncStorage from '@react-native-community/async-storage';
 
 import ProfileHeader from '../../components/Profile/ProfileHeader';
@@ -33,7 +33,6 @@ const ProfileScreen = props => {
     const loadUserProfile = useCallback(async () => {
 
       console.log('PROFILE TAB LOADED');
-      //console.log(topTracks)
       setIsLoading(true);
       try {
         await dispatch(dispatchUser());
@@ -43,17 +42,6 @@ const ProfileScreen = props => {
       }
       setIsLoading(false);
     }, [dispatch, setIsLoading]);
-
-    // useEffect(() => {
-    //   const willFocus = props.navigation.addListener(
-    //     'willFocus',
-    //     loadUserProfile
-    //   );
-  
-    //   return () => {
-    //     willFocus.remove();
-    //   };
-    // }, [loadUserProfile]);
     
 
     useEffect(() => {
@@ -76,6 +64,13 @@ const ProfileScreen = props => {
       await dispatch(getTrackFeatures(id));
       props.navigation.navigate('Track', {
         trackId: id
+      });
+    };
+
+    const selectPlaylistHandler = async (playlistId) => {
+      await dispatch(getPlaylist(playlistId));
+      props.navigation.navigate('Playlist', {
+        playlistId: playlistId
       });
     };
 		
@@ -148,7 +143,11 @@ const ProfileScreen = props => {
             <ScrollView contentContainerStyle={{marginLeft: 12, marginTop: 20}}>
               {playlists.map((item, i) => {
                 return (
-                  <Playlists key={i} image={item.images[0].url} title={item.name} totalSongs={item.tracks.total} />
+                  <Playlists key={i} image={item.images[0].url} title={item.name} totalSongs={item.tracks.total}
+                    onSelect={() => {
+                      selectPlaylistHandler(item.id)
+                    }}
+                  />
                 )
               })}
             </ScrollView>
