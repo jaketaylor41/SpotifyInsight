@@ -1,5 +1,5 @@
 
-import { AUTHENTICATE } from '../actions/auth';
+import { AUTHENTICATE, LOGOUT } from '../actions/auth';
 
 const initialState = {
     accessToken: null,
@@ -14,6 +14,8 @@ export default (state = initialState, action) => {
                 accessToken: action.accessToken,
                 refreshToken: action.refreshToken
             };
+        case LOGOUT: 
+            return initialState;
         default:
             return state;
     }

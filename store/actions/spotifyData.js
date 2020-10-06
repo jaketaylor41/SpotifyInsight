@@ -21,7 +21,7 @@ export const getValidSPObj = async () => {
 	} catch (err) {
 		throw err;
 	}
-}
+};
 
 
 // Dispatch Handler
@@ -37,7 +37,7 @@ export const dispatchUser = () => {
 			throw err;
 		}
 	}
-}
+};
 
 
 // Get All User Info
@@ -88,7 +88,7 @@ export const getArtist = (artistId) => {
 		}
 
 	}
-}
+};
 
 // Get Artist Top Tracks
 export const getArtistTopTracks = (id) => {
@@ -104,7 +104,7 @@ export const getArtistTopTracks = (id) => {
 			console.log(error)
 		}
 	}
-}
+};
 
 // Get Track Info
 export const getTrack = (id) => {
@@ -120,7 +120,7 @@ export const getTrack = (id) => {
 			console.log(error)
 		}
 	}
-}
+};
 
 // Get Track Analysis
 export const getTrackFeatures = (id) => {
@@ -138,7 +138,7 @@ export const getTrackFeatures = (id) => {
 			console.log(error)
 		}
 	}
-}
+};
 
 // Get User Playlists
 export const getPlaylist = (playlistId) => {
@@ -156,4 +156,121 @@ export const getPlaylist = (playlistId) => {
 			console.log(error)
 		}
 	}
-}
+};
+
+// Get All Time Top Artists for User
+export const getAllTopArtists = async () => {
+	try {
+		const sp = await getValidSPObj();
+		const allTopArtists = await sp.getMyTopArtists({limit: 50, time_range: 'long_term'});
+
+		return allTopArtists;
+		
+	} catch (error) {
+		console.log(error)
+	}
+};
+
+// Get Top Artists for Last 6 Months
+export const getMediumTopArtists = async () => {
+	try {
+		const sp = await getValidSPObj();
+		const mediumTopArtists = await sp.getMyTopArtists({limit: 50, time_range: 'medium_term'});
+
+		return mediumTopArtists;
+		
+	} catch (error) {
+		console.log(error)
+	}
+};
+
+// Get Top Artists for Last 4 Weeks
+export const getShortTopArtists = async () => {
+	try {
+		const sp = await getValidSPObj();
+		const shortTopArtists = await sp.getMyTopArtists({limit: 50, time_range: 'short_term'});
+
+		return shortTopArtists;
+		
+	} catch (error) {
+		console.log(error)
+	}
+};
+
+//Get Top Tracks of All Time
+export const getTopTracksLong = async () => {
+	try {
+		const sp = await getValidSPObj();
+		const topTrackslong = await sp.getMyTopTracks({limit: 50, time_range: 'long_term'});
+
+		return topTrackslong;
+		
+	} catch (error) {
+		console.log(error)
+	}
+};
+
+//Get Top Tracks for Last 6 Months
+export const getTopTracksMedium = async () => {
+	try {
+		const sp = await getValidSPObj();
+		const topTracksMedium = await sp.getMyTopTracks({limit: 50, time_range: 'medium_term'});
+
+		return topTracksMedium;
+		
+	} catch (error) {
+		console.log(error)
+	}
+};
+
+//Get Top Tracks for Last 4 Weeks
+export const getTopTracksShort = async () => {
+	try {
+		const sp = await getValidSPObj();
+		const topTracksShort = await sp.getMyTopTracks({limit: 50, time_range: 'short_term'});
+
+		return topTracksShort;
+		
+	} catch (error) {
+		console.log(error)
+	}
+};
+
+// Get Currently Playing Track for User
+export const getCurrentlyPlaying = async () => {
+	try {
+		const sp = await getValidSPObj();
+		const currentlyPlaying = await sp.getMyCurrentPlayingTrack();
+
+		return currentlyPlaying;
+
+	} catch (error) {
+		console.log(error)
+	}
+};
+
+// Get Recently Played Tracks for User
+export const getRecentlyPlayed = async () => {
+	try {
+		const sp = await getValidSPObj();
+		const recentlyPlayed = await sp.getMyRecentlyPlayedTracks();
+
+		return recentlyPlayed;
+
+	} catch (error) {
+		console.log(error)
+	}
+};
+
+// Get Users Available Devices
+export const getDevices = async () => {
+	try {
+		const sp = await getValidSPObj();
+		const devices = await sp.getMyDevices();
+
+		return devices;
+
+	} catch (error) {
+		console.log(error)
+	}
+};

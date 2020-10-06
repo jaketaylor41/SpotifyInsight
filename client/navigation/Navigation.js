@@ -1,10 +1,8 @@
 import React from 'react';
-import { Button } from 'react-native';
 import { createAppContainer, createSwitchNavigator } from 'react-navigation';
 import { createStackNavigator } from 'react-navigation-stack';
 
 import LoginScreen from '../screens/LoginScreen';
-import PlaylistsScreen from '../screens/Tabs/PlaylistsScreen';
 import ProfileScreen from '../screens/Tabs/ProfileScreen';
 import RecentScreen from '../screens/Tabs/RecentScreen';
 import TopArtistsScreen from '../screens/Tabs/TopArtistsScreen';
@@ -14,11 +12,14 @@ import ArtistProfileScreen from '../screens/Stack/ArtistProfileScreen';
 import TrackAnalysisScreen from '../screens/Stack/TrackAnalysisScreen';
 import PlaylistDetailScreen from '../screens/Stack/PlaylistDetailScreen';
 
-import { Platform } from 'react-native';
+import { Platform, SafeAreaView, Button, View } from 'react-native';
+import { useDispatch } from 'react-redux';
+import { logout } from '../../store/actions/auth';
 
 import Colors from '../constants/Colors';
 import { FontAwesome, Entypo, Ionicons, MaterialCommunityIcons } from '@expo/vector-icons';
 import { createMaterialBottomTabNavigator } from 'react-navigation-material-bottom-tabs';
+import { createDrawerNavigator } from 'react-navigation-drawer';
 
 
 
@@ -73,12 +74,6 @@ const TabNavigator = createMaterialBottomTabNavigator(
             },
             title: 'Top Tracks',
         }},
-        Playlists: {screen: PlaylistsScreen, navigationOptions: {
-            tabBarIcon: (tabInfo) => {
-                return <MaterialCommunityIcons name="playlist-music" size={25} color={tabInfo.tintColor}/>;
-            },
-            title: 'Playlists',
-        }},
         Recents: {screen: RecentScreen, navigationOptions: {
             tabBarIcon: (tabInfo) => {
                 return <Entypo name="back-in-time" size={24} color={tabInfo.tintColor}/>;
@@ -96,6 +91,7 @@ const TabNavigator = createMaterialBottomTabNavigator(
 );
 
 
+
 const AuthStackNavigator = createStackNavigator(
     {
         Auth: LoginScreen
@@ -111,7 +107,7 @@ const AuthSwitchNavigator = createSwitchNavigator(
     {
         Starter: AuthLoadingScreen,
         Auth: AuthStackNavigator,
-        Tabs: TabNavigator
+				Tabs: TabNavigator
     },
     {
         initialRouteName: 'Starter'

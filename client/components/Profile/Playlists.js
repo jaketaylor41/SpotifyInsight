@@ -12,17 +12,17 @@ const Playlists = props => {
 
     return (
 			<View style={styles.container}>
-				<View style={styles.item}>
 				<TouchableCmp onPress={props.onSelect} useForeground>
+				<View style={styles.item}>
 					<View style={styles.imageContainer}>
 						<Image style={styles.playlistCoverArt} source={{uri: props.image}} />
 					</View>
-				</TouchableCmp>
 					<View style={styles.titleContainer}>
 						<Text style={styles.playlistTitle}>{props.title}</Text>
 						<Text style={styles.totalSongs}>{props.totalSongs} Songs</Text>
 					</View>
 				</View>
+				</TouchableCmp>
 			</View>
     );
 };

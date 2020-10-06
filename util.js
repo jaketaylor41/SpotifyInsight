@@ -15,7 +15,8 @@ export const Gradient = () => (
           <Stop offset={'100%'} stopColor={'rgba(28, 28, 28)'}/>
       </LinearGradient>
   </Defs>
-)
+);
+
 
 
 

@@ -5,6 +5,7 @@ import { encode as btoa } from 'base-64';
 import AsyncStorage from '@react-native-community/async-storage';
 
 export const AUTHENTICATE = 'AUTHENTICATE';
+export const LOGOUT = 'LOGOUT';
 
 const saveDataToStorage = (accessToken, refreshToken, expirationTime) => {
     AsyncStorage.setItem(
@@ -21,6 +22,11 @@ export const authenticate = (accessToken, refreshToken) => {
     return {type: AUTHENTICATE, accessToken: accessToken, refreshToken: refreshToken};
 };
 
+export const logout = () => {
+    AsyncStorage.removeItem('userData');
+    return { type: LOGOUT };
+}
+
 
 const scopesArr = 
     ['user-read-private',
@@ -31,7 +37,9 @@ const scopesArr =
         'user-follow-modify',
         'playlist-read-private',
         'playlist-read-collaborative',
-        'playlist-modify-public'
+        'playlist-modify-public',
+        'user-read-currently-playing',
+        'user-read-playback-state'
     ];
 const scopes = scopesArr.join(' ');
 

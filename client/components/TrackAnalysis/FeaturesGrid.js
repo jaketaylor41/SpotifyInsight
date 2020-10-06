@@ -35,8 +35,10 @@ const styles = StyleSheet.create({
 	container: {
 		flex: 1,
 		flexDirection: 'row',
+		alignSelf: 'center',
 		justifyContent: 'space-evenly',
-		marginBottom: 50
+		marginBottom: 50,
+		maxWidth: '95%'
 	},
 	cell: {
 		flex: 1,
@@ -45,7 +47,8 @@ const styles = StyleSheet.create({
 		borderRightColor: 'rgba(255, 255, 255, 0.8)',
 		borderBottomColor: 'rgba(255, 255, 255, 0.8)',
 		paddingRight: 5,
-		paddingLeft: 5
+		paddingLeft: 5,
+		paddingBottom: 5
 	},
 	lastCell: {
 		flex: 1,

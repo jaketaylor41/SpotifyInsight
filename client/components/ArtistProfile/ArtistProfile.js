@@ -22,7 +22,7 @@ const TopArtist = props => {
 			<View style={styles.container}>
 				<View>
 					<View style={styles.imageContainer}>
-						<Image resizeMode={'cover'} style={{width: imgWidth, height: imgHeight}} source={{uri: props.image}} alt="avatar" />
+						<Image resizeMode={'cover'} style={{width: imgWidth, height: '100%'}} source={{uri: props.image}} alt="avatar" />
 						<View style={styles.textContainer}>
 							<LinearGradient colors={['transparent', 'rgba(0,0,0,0.8)']}>
 								<Text style={styles.name}>{props.name}</Text>
@@ -87,18 +87,18 @@ const styles = StyleSheet.create({
 	genreContainer: {
 		marginLeft: 12,
 	},
-	genreWrapper : {
+	genreWrapper: {
 		flexDirection: 'row',
 		flexWrap: 'wrap',
 		marginTop: 10,
 	},
 	genre: {
 		color: 'rgba(255, 255, 255, 0.8)',
-		fontSize: 12,
+		fontSize: 15,
 		fontFamily: 'montserrat-regular'
 	},
 	sectionTitleContainer: {
-		marginTop: 40,
+		marginTop: 30,
 		marginLeft: 12
 	},
 	sectionTitle: {

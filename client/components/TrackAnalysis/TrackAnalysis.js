@@ -27,8 +27,9 @@ const TrackAnalysis = props => {
 								<View>
 									<Text style={styles.title}>{props.name}</Text>
 								</View>
-								<View>
+								<View style={styles.subTextContainer}>
 									<Text style={styles.artist}>{props.artist}</Text>
+									<Text style={styles.releaseYear}> • Released {props.release}</Text>
 								</View>
 							</LinearGradient>
 						</View>
@@ -57,13 +58,11 @@ const styles = StyleSheet.create({
 		width: '100%',
 	},
 	title: {
-		textAlign: 'center',
 		fontFamily: 'montserrat-bold',
 		color: '#fff',
 		paddingTop: 15,
 		fontSize: 40,
 		marginLeft: 12,
-
 		textAlign: 'left',
 	},
 	artist: {
@@ -73,6 +72,16 @@ const styles = StyleSheet.create({
 		textAlign: 'left',
 		marginLeft: 12,
 		marginBottom: 5,
+	},
+	releaseYear: {
+		textAlign: 'center',
+		fontFamily: 'montserrat-semi-bold',
+		color: '#fff',
+		textAlign: 'left',
+		marginBottom: 5,
+	},
+	subTextContainer: {
+		flexDirection: 'row'
 	}
 
 });

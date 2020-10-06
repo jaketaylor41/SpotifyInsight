@@ -5,6 +5,7 @@ import Colors from '../../constants/Colors';
 import { useSelector } from 'react-redux';
 import PlaylistDetail from '../../components/PlaylistDetail/PlaylistDetail';
 import { ScrollView } from 'react-native-gesture-handler';
+import PlaylistDetailHeader from '../../components/PlaylistDetail/PlaylistDetailHeader';
 
 
 const PlaylistDetailScreen = props => {
@@ -13,15 +14,24 @@ const PlaylistDetailScreen = props => {
     state.spotifyData.playlists.find(playlist => playlist.id === playlistId)
     );
   const playlist = useSelector(state => state.spotifyData.playlist);
+  //console.log(playlist)
 
   return (
     <SafeAreaView style={styles.screen}>
-      <ScrollView>
-      {playlist.items.map((item, i) => {
+      <ScrollView showsVerticalScrollIndicator={false}>
+      <PlaylistDetailHeader
+        playlistImage={playlist.images[0].url}
+        playlistTitle={playlist.name}
+        followers={playlist.followers.total}
+        creator={playlist.owner.display_name}
+      />
+      {playlist.tracks.items.map((item, i) => {
         return (
           <PlaylistDetail
-            image={item.images[2].url}
-            title={item.name}
+            key={i}
+            image={item.track.album.images[2].url}
+            title={item.track.name}
+            artist={item.track.artists[0].name}
           />
         );
       })}

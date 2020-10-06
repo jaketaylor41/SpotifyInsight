@@ -8,7 +8,7 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import Colors from '../../constants/Colors';
 
 import { dispatchUser, getTrackFeatures, getArtistTopTracks, getPlaylist } from '../../../store/actions/spotifyData';
-import AsyncStorage from '@react-native-community/async-storage';
+import { logout } from '../../../store/actions/auth';
 
 import ProfileHeader from '../../components/Profile/ProfileHeader';
 import ProfileStats from '../../components/Profile/ProfileStats';
@@ -94,7 +94,7 @@ const ProfileScreen = props => {
 
     return (
       <SafeAreaView style={styles.screen}>
-        <ScrollView nestedScrollEnabled={true} style={styles.screen} contentContainerStyle={{ flexGrow: 1, justifyContent: 'flex-start' }}>
+        <ScrollView showsVerticalScrollIndicator={false} nestedScrollEnabled={true} style={styles.screen} contentContainerStyle={{ flexGrow: 1, justifyContent: 'flex-start' }}>
             <View>
               <ProfileHeader image={user.images[0].url} name={user.display_name} />
             </View>
@@ -109,6 +109,7 @@ const ProfileScreen = props => {
                 keyExtractor={item => item.id}
                 contentContainerStyle={{marginLeft: 12, marginTop: 20}}
                 horizontal={true}
+                showsHorizontalScrollIndicator={false}
                 data={topArtists.items}
                 renderItem={({item}) => {
                   return (
@@ -127,6 +128,7 @@ const ProfileScreen = props => {
                 keyExtractor={item => item.id}
                 contentContainerStyle={{marginLeft: 12, marginTop: 20}}
                 horizontal={true}
+                showsHorizontalScrollIndicator={false}
                 data={topTracks.items}
                 renderItem={({item}) => {
                   return (
@@ -157,10 +159,6 @@ const ProfileScreen = props => {
 
 };
 
-const logout = async () => {
-	AsyncStorage.removeItem('userData');
-}
-
 ProfileScreen.navigationOptions = navData => {
   return {
     headerRight: () => (
@@ -169,9 +167,8 @@ ProfileScreen.navigationOptions = navData => {
           title="Add"
           iconName={Platform.OS === 'android' ? 'md-log-out' : 'ios-log-out'}
           onPress={() => {
-						logout().then(() => {
-              navData.navigation.navigate('Starter');
-            });
+            logout();
+            navData.navigation.navigate('Auth');
           }}
         />
       </HeaderButtons>

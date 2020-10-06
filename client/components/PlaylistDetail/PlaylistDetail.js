@@ -1,6 +1,5 @@
 import React from 'react';
-import { View, StyleSheet } from 'react-native';
-import { FlatList } from 'react-native-gesture-handler';
+import { View, StyleSheet, Image, Text, Dimensions } from 'react-native';
 
 
 const PlaylistDetail = props => {
@@ -8,11 +7,12 @@ const PlaylistDetail = props => {
 	return (
 		<View style={styles.container}>
       <View style={styles.item}>
-        <View style={styles.imageContainer}>
+        <View style={styles.trackImageContainer}>
           <Image style={styles.playlistCoverArt} source={{uri: props.image}} />
         </View>
         <View style={styles.titleContainer}>
-          <Text style={styles.playlistTitle}>{props.title}</Text>
+          <Text numberOfLines={1} ellipsizeMode='tail' style={styles.songTitle}>{props.title}</Text>
+          <Text style={styles.songArtist}>{props.artist}</Text>
         </View>
       </View>
 		</View>
@@ -20,13 +20,22 @@ const PlaylistDetail = props => {
 
 };
 
+const screenDimension = Dimensions.get('window');
 
 const styles = StyleSheet.create({
+  container: {
+    marginLeft: 12
+  },
   item: {
 		flexDirection: 'row',
 		marginBottom: 15
-	},
-	imageContainer: {
+  },
+  imageContainer: {
+    width: screenDimension.width,
+		height: 350,
+		overflow: 'hidden',
+  },
+	trackImageContainer: {
 		width: 50,
 		height: 50,
 		overflow: 'hidden'
@@ -37,9 +46,20 @@ const styles = StyleSheet.create({
 	},
 	titleContainer: {
 		flexDirection: 'column',
-		justifyContent: 'center',
+    justifyContent: 'center',
+    maxWidth: 260,
 		marginLeft: 20
-	},
+  },
+  songTitle: {
+    color: '#fff',
+    fontFamily: 'montserrat-semi-bold',
+    fontSize: 13
+  },
+  songArtist: {
+    color: '#fff',
+    fontFamily: 'montserrat-regular',
+    fontSize: 12
+  }
 
 });
 

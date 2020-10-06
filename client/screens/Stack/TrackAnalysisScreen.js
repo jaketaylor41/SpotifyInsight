@@ -55,21 +55,23 @@ const TrackAnalysisScreen = props => {
 	if (trackFeatures) {
 		return (
 			<SafeAreaView style={styles.screen}>
-				<ScrollView>
+				<ScrollView showsVerticalScrollIndicator={false}>
 					<TrackAnalysis
 						image={selectedTrack.album.images[0].url}
 						name={selectedTrack.name}
 						artist={selectedTrack.artists[0].name}
+						release={selectedTrack.album.release_date.slice(0,4)}
 					/>
+					<View style={styles.sectionTitleContainer}>
+						<Text style={styles.sectionTitle}>Track Features</Text>
+					</View>
 					<FeaturesGrid
 						duration={convertDuration(trackFeatures.duration_ms)}
 						trackKey={convertPitch(trackFeatures.key)}
 						mode={trackFeatures.mode === 1 ? 'Major' : 'Minor'}
 						timeSig={trackFeatures.time_signature}
-						tempo={Math.round(trackFeatures.tempo)}/>
-					<View style={styles.sectionTitleContainer}>
-						<Text style={styles.sectionTitle}>Track Features</Text>
-					</View>
+						tempo={Math.round(trackFeatures.tempo)}
+					/>
 				<View style={styles.container}>
 						<YAxis
 							data={chartValues}

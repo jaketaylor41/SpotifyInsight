@@ -31,14 +31,14 @@ const ArtistProfileScreen = props => {
 		if (songs !== null) {
 			return (
 				<SafeAreaView style={styles.screen}>
-					<ScrollView>
+					<ScrollView showsVerticalScrollIndicator={false}>
 						<ArtistProfile
 							image={selectedArtist.images[0].url}
 							name={selectedArtist.name}
 							followers={selectedArtist.followers.total}
 							genres={selectedArtist.genres}
 						/>
-							<ScrollView contentContainerStyle={{marginLeft: 12, marginTop: 20}}>
+							<ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={{marginLeft: 12, marginTop: 20}}>
 								{songs.tracks.map((item, i) => {
 									return (
 										<View style={styles.topSong} key={i}>
@@ -46,8 +46,8 @@ const ArtistProfileScreen = props => {
 												<Image style={styles.trackImage} source={{uri: item.album.images[0].url}} />
 											</View>
 											<View style={styles.trackTitleContainer}>
-												<Text numberOfLines={2} ellipsizeMode='tail' style={styles.trackTitle}>{item.name}</Text>
-												<Text style={styles.year}>Released {item.album.release_date.slice(0, 4)}</Text>
+												<Text numberOfLines={1} ellipsizeMode='tail' style={styles.trackTitle}>{item.name}</Text>
+												<Text numberOfLines={1} ellipsizeMode='tail' style={styles.album}>{item.album.name}</Text>
 											</View>
 											<View style={styles.durationContainer}>
 												<Text style={styles.duration}>{convertDuration(item.duration_ms)}</Text>
@@ -92,7 +92,7 @@ const styles = StyleSheet.create({
 		fontSize: 12,
 		fontFamily: 'montserrat-semi-bold',
 	},
-	year: {
+	album: {
 		color: '#fff',
 		fontFamily: 'montserrat-regular',
 		fontSize: 12
