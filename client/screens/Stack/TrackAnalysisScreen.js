@@ -17,11 +17,8 @@ const TrackAnalysisScreen = props => {
 	const [isLoading, setIsLoading] = useState(false);
 	//const trackAnalysis = useSelector(state => state.spotifyData.trackAnalysis);
 	const trackFeatures = useSelector(state => state.spotifyData.trackFeatures);
-	const selectedTrack = useSelector(state => 
-		state.spotifyData.topTracks.items.find(track => track.id === trackId)
-	);
+	const selectedTrack = useSelector(state => state.spotifyData.trackInfo);
 	const [chartValues, setValues] = useState([]);
-
 
 
 	if (isLoading) {
@@ -52,26 +49,28 @@ const TrackAnalysisScreen = props => {
 
 	const deviceWidth = Dimensions.get('window');
 
-	if (trackFeatures) {
 		return (
 			<SafeAreaView style={styles.screen}>
 				<ScrollView showsVerticalScrollIndicator={false}>
+					{selectedTrack && 
 					<TrackAnalysis
 						image={selectedTrack.album.images[0].url}
 						name={selectedTrack.name}
 						artist={selectedTrack.artists[0].name}
 						release={selectedTrack.album.release_date.slice(0,4)}
-					/>
+					/> }
 					<View style={styles.sectionTitleContainer}>
 						<Text style={styles.sectionTitle}>Track Features</Text>
 					</View>
+					{trackFeatures &&
 					<FeaturesGrid
 						duration={convertDuration(trackFeatures.duration_ms)}
 						trackKey={convertPitch(trackFeatures.key)}
 						mode={trackFeatures.mode === 1 ? 'Major' : 'Minor'}
 						timeSig={trackFeatures.time_signature}
 						tempo={Math.round(trackFeatures.tempo)}
-					/>
+					/>}
+					{trackFeatures && 
 				<View style={styles.container}>
 						<YAxis
 							data={chartValues}
@@ -110,16 +109,14 @@ const TrackAnalysisScreen = props => {
 							svg={{ fontSize: 10, fill: '#fff', rotation: -40, textAnchor: 'end', dy: 4, dx: 6}}
 						/>
 					</View>
-				</View>
+				</View> }
 				<View style={styles.modalBtnContainer}>
 					<ModalButton>Feature Descriptions</ModalButton>
 				</View>
-				</ScrollView>
+				</ScrollView>	
 			</SafeAreaView>
 
 		);
-
-	}
 };
 
 const styles = StyleSheet.create({

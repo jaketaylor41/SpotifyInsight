@@ -6,6 +6,7 @@ export const USER_INFO = 'USER_INFO';
 export const ARTIST = 'ARTIST';
 export const TRACK = 'TRACK';
 export const PLAYLIST = 'PLAYLIST';
+export const FEATURES = 'FEATURES';
 
 // Get Valid Spotify Obj
 export const getValidSPObj = async () => {
@@ -111,10 +112,9 @@ export const getTrack = (id) => {
 	return async dispatch => {
 		try {
 			const sp = await getValidSPObj();
-			const track = await sp.getTrack(id);
+			const trackInfo = await sp.getTrack(id);
 
-
-			dispatch({type: TRACK, track: track});
+			dispatch({type: TRACK, trackInfo: trackInfo});
 			
 		} catch (error) {
 			console.log(error)
@@ -130,7 +130,7 @@ export const getTrackFeatures = (id) => {
 			const trackFeatures = await sp.getAudioFeaturesForTrack(id);
 
 			dispatch({
-				type: TRACK,
+				type: FEATURES,
 				trackFeatures: trackFeatures
 			});
 			
@@ -274,3 +274,5 @@ export const getDevices = async () => {
 		console.log(error)
 	}
 };
+
+

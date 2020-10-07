@@ -4,7 +4,7 @@ import {
     ARTIST,
     TRACK,
     PLAYLIST,
-    TOP_ARTISTS_SCREEN
+    FEATURES
 } from '../actions/spotifyData';
 
 const initialState = {
@@ -14,9 +14,9 @@ const initialState = {
     topArtists: null,
     topTracks: null,
     artistTopSongs: null,
-    trackAnalysis: null,
     trackFeatures: null,
-    playlist: null
+    playlist: null,
+    trackInfo: null
 }
 
 
@@ -39,7 +39,12 @@ export default (state = initialState, action) => {
         case TRACK:
             return {
                 ...state,
-                trackFeatures: action.trackFeatures
+                trackInfo: action.trackInfo
+            };
+        case FEATURES:
+            return {
+                ...state,
+                trackFeatures: action.trackFeatures,
             };
         case PLAYLIST:
             return {

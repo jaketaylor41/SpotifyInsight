@@ -18,9 +18,6 @@ const RecentListHeader = props => {
               <Text style={styles.artist}>{props.artist}</Text>
             </View>
           </View>
-          <View style={styles.sectionTitleContainer}>
-            <Text style={styles.sectionTitle}>Recently Played</Text>
-          </View>
         </View>
     );
 
@@ -30,7 +27,6 @@ const RecentListHeader = props => {
 const deviceWidth = Dimensions.get('window');
 
 const styles = StyleSheet.create({
-
   container: {
     marginTop: 30
   },
@@ -45,7 +41,6 @@ const styles = StyleSheet.create({
   },
   nowPlayingSubContainer: {
     marginTop: 15,
-    marginLeft: 12
   },
   nowPlaying: {
     color: '#fff',
@@ -63,21 +58,6 @@ const styles = StyleSheet.create({
     color: '#fff',
     fontSize: 15,
     fontFamily: 'montserrat-regular',
-  },
-  sectionTitleContainer: {
-    marginBottom: 20
-  },
-  sectionTitleOne: {
-    color: '#fff',
-    fontSize: 20,
-    fontFamily: 'montserrat-bold',
-    textAlign: 'left'
-  },
-  sectionTitle: {
-    color: '#fff',
-    fontSize: 25,
-    fontFamily: 'montserrat-bold',
-    textAlign: 'center'
   }
 
 });

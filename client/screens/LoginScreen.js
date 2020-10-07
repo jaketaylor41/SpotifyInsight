@@ -1,6 +1,6 @@
 import React, {useEffect, useState} from 'react';
 import { View, StyleSheet, Text, KeyboardAvoidingView, Image } from 'react-native';
-import LoginButton from '../components/Login/LoginButton';
+import AuthButton from '../components/UI/AuthButton';
 import Colors from '../constants/Colors';
 import { useDispatch, useSelector } from 'react-redux';
 import {refreshTokens, getTokens, getUserData} from '../../store/actions/auth';
@@ -19,7 +19,6 @@ const LoginScreen = props => {
         try {
             await dispatch(action);
             props.navigation.navigate('Tabs');
-
         } catch (err) {
             console.log("LOGIN SCREEN" + err);
         }
@@ -29,7 +28,7 @@ const LoginScreen = props => {
         <View style={styles.screen}>
             <Image resizeMode="cover" style={styles.image} source={require('../../assets/images/SpotifyIcon.png')} />
             <Text style={styles.title}>Spotify Insight</Text>
-            <LoginButton onPress={authHandler}>LOG IN TO SPOTIFY</LoginButton>
+            <AuthButton onPress={authHandler}>LOG IN TO SPOTIFY</AuthButton>
         </View>
     );
 

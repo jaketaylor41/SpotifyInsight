@@ -9,6 +9,7 @@ const AuthLoadingScreen = props => {
     const dispatch = useDispatch();
 
     useEffect(() => {
+        console.log('Inside AuthLoadingScreen.js')
         const tryLogin = async () => {
             const userData = await AsyncStorage.getItem('userData');
             if (!userData) {

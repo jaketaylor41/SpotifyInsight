@@ -1,24 +1,32 @@
 import React from 'react';
-import { View, StyleSheet, Image, Text } from 'react-native';
+import { View, StyleSheet, Image, Text, TouchableOpacity, TouchableNativeFeedback, Platform } from 'react-native';
 import { convertDuration } from '../../../util';
 
 
 const RecentList = props => {
 
+	let TouchableCmp = TouchableOpacity;
+
+  if (Platform.OS === 'android' && Platform.Version >= 21) {
+    TouchableCmp = TouchableNativeFeedback;
+  }
+
   return (
     <View style={styles.container}>
-      <View style={styles.recentSong}>
-        <View style={styles.trackImageContainer}>
-          <Image style={styles.trackImage} source={{uri: props.image}} />
-        </View>
-        <View style={styles.trackTitleContainer}>
-          <Text numberOfLines={1} ellipsizeMode='tail' style={styles.trackTitle}>{props.title}</Text>
-          <Text numberOfLines={1} ellipsizeMode='tail' style={styles.album}>{props.album}</Text>
-        </View>
-        <View style={styles.durationContainer}>
-          <Text style={styles.duration}>{convertDuration(props.duration)}</Text>
-        </View>
-      </View>
+			<TouchableCmp onPress={props.onSelect} useForeground>
+				<View style={styles.recentSong}>
+					<View style={styles.trackImageContainer}>
+						<Image style={styles.trackImage} source={{uri: props.image}} />
+					</View>
+					<View style={styles.trackTitleContainer}>
+						<Text numberOfLines={1} ellipsizeMode='tail' style={styles.trackTitle}>{props.title}</Text>
+						<Text numberOfLines={1} ellipsizeMode='tail' style={styles.album}>{props.album}</Text>
+					</View>
+					<View style={styles.durationContainer}>
+						<Text style={styles.duration}>{convertDuration(props.duration)}</Text>
+					</View>
+				</View>
+			</TouchableCmp>
     </View>
   );
 };

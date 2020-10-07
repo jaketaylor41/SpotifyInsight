@@ -7,8 +7,7 @@ import { HeaderButtons, Item } from 'react-navigation-header-buttons';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import Colors from '../../constants/Colors';
 
-import { dispatchUser, getTrackFeatures, getArtistTopTracks, getPlaylist } from '../../../store/actions/spotifyData';
-import { logout } from '../../../store/actions/auth';
+import { dispatchUser, getTrackFeatures, getArtistTopTracks, getPlaylist, getTrack } from '../../../store/actions/spotifyData';
 
 import ProfileHeader from '../../components/Profile/ProfileHeader';
 import ProfileStats from '../../components/Profile/ProfileStats';
@@ -62,9 +61,8 @@ const ProfileScreen = props => {
 
     const selectTrackHandler = async (id) => {
       await dispatch(getTrackFeatures(id));
-      props.navigation.navigate('Track', {
-        trackId: id
-      });
+      await dispatch(getTrack(id));
+      props.navigation.navigate('Track');
     };
 
     const selectPlaylistHandler = async (playlistId) => {
@@ -164,11 +162,10 @@ ProfileScreen.navigationOptions = navData => {
     headerRight: () => (
       <HeaderButtons HeaderButtonComponent={HeaderButton}>
         <Item
-          title="Add"
-          iconName={Platform.OS === 'android' ? 'md-log-out' : 'ios-log-out'}
+          title="Menu"
+          iconName={Platform.OS === 'android' ? 'md-menu' : 'ios-menu'}
           onPress={() => {
-            logout();
-            navData.navigation.navigate('Auth');
+            navData.navigation.toggleDrawer();
           }}
         />
       </HeaderButtons>
