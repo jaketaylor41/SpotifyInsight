@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useCallback } from 'react';
-import { useSelector, useDispatch } from 'react-redux';
+import { useSelector, useDispatch, useRef } from 'react-redux';
 
 import { View, Text, StyleSheet, ActivityIndicator, Image } from 'react-native';
 import { FlatList, ScrollView } from 'react-native-gesture-handler';
@@ -7,7 +7,7 @@ import { HeaderButtons, Item } from 'react-navigation-header-buttons';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import Colors from '../../constants/Colors';
 
-import { dispatchUser, getTrackFeatures, getArtistTopTracks, getPlaylist, getTrack } from '../../../store/actions/spotifyData';
+import { dispatchUser, getTrackFeatures, getArtistTopTracks, getPlaylist, getTrack, getArtist } from '../../../store/actions/spotifyData';
 
 import ProfileHeader from '../../components/Profile/ProfileHeader';
 import ProfileStats from '../../components/Profile/ProfileStats';
@@ -26,34 +26,47 @@ const ProfileScreen = props => {
     const following = useSelector(state => state.spotifyData.following);
     const topArtists = useSelector(state => state.spotifyData.topArtists);
     const topTracks = useSelector(state => state.spotifyData.topTracks);
+    const token = useSelector(state => state.auth.accessToken);
     const [isLoading, setIsLoading] = useState(false);
 
 
     const loadUserProfile = useCallback(async () => {
-
+      let mounted = true;
       console.log('PROFILE TAB LOADED');
       setIsLoading(true);
       try {
-        await dispatch(dispatchUser());
+        if (mounted) {
+          await dispatch(dispatchUser());
+        }
       } catch (err) {
-        console.log(err);
-        props.navigation.navigate('Starter');
+        if (mounted) {
+          console.log(err);
+        }
       }
       setIsLoading(false);
+      return () => {
+        mounted = false
+      }
     }, [dispatch, setIsLoading]);
-    
 
     useEffect(() => {
-
-			setIsLoading(true);
-			loadUserProfile().then(() => {
-					setIsLoading(false);
-      });
+      let mounted = true;
+      setIsLoading(true);
+      if (mounted) {
+        loadUserProfile().then(() => {
+            setIsLoading(false);
+        });
+      }
+      return () => {
+        console.log('unmounted')
+        mounted = false;
+      }
+    }, [dispatch, loadUserProfile]);
     
-		}, [dispatch, loadUserProfile]);
 
     const selectArtistHandler = async (id) => {
       await dispatch(getArtistTopTracks(id));
+      await dispatch(getArtist(id));
       props.navigation.navigate('Artist', {
         artistId: id
       });
@@ -145,7 +158,7 @@ const ProfileScreen = props => {
                 return (
                   <Playlists key={i} image={item.images[0].url} title={item.name} totalSongs={item.tracks.total}
                     onSelect={() => {
-                      selectPlaylistHandler(item.id)
+                      selectPlaylistHandler(item.id);
                     }}
                   />
                 )

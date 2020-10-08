@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useCallback } from 'react';
-import { View, StyleSheet, Button, Text, SafeAreaView, ActivityIndicator, Dimensions } from 'react-native';
+import { View, StyleSheet, Text, SafeAreaView, ActivityIndicator, Dimensions, Modal } from 'react-native';
 import { useSelector } from 'react-redux';
 import { ScrollView } from 'react-native-gesture-handler';
 import Colors from '../../constants/Colors';
@@ -8,8 +8,10 @@ import TrackAnalysis from '../../components/TrackAnalysis/TrackAnalysis';
 import { BarChart, XAxis, YAxis, Grid } from 'react-native-svg-charts';
 import ModalButton from '../../components/UI/ModalButton';
 import FeaturesGrid from '../../components/TrackAnalysis/FeaturesGrid';
+import ModalBody from '../../components/UI/ModalBody';
 
 import { convertDuration, convertPitch, Gradient } from '../../../util';
+
 
 const TrackAnalysisScreen = props => {
 
@@ -19,6 +21,11 @@ const TrackAnalysisScreen = props => {
 	const trackFeatures = useSelector(state => state.spotifyData.trackFeatures);
 	const selectedTrack = useSelector(state => state.spotifyData.trackInfo);
 	const [chartValues, setValues] = useState([]);
+	const [isAddMode, setIsAddMode] = useState(false);
+
+	const closeModal = () => {
+    setIsAddMode(false);
+  };
 
 
 	if (isLoading) {
@@ -49,8 +56,8 @@ const TrackAnalysisScreen = props => {
 
 	const deviceWidth = Dimensions.get('window');
 
-		return (
-			<SafeAreaView style={styles.screen}>
+	return (
+		<SafeAreaView style={styles.screen}>
 				<ScrollView showsVerticalScrollIndicator={false}>
 					{selectedTrack && 
 					<TrackAnalysis
@@ -111,8 +118,11 @@ const TrackAnalysisScreen = props => {
 					</View>
 				</View> }
 				<View style={styles.modalBtnContainer}>
-					<ModalButton>Feature Descriptions</ModalButton>
+					<ModalButton onPress={() => setIsAddMode(true)}>Feature Descriptions</ModalButton>
 				</View>
+				<Modal visible={isAddMode} dismissable animationType='slide'>
+					<ModalBody onCancel={closeModal} />
+				</Modal>
 				</ScrollView>	
 			</SafeAreaView>
 

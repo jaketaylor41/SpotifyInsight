@@ -14,70 +14,86 @@ import RecentListHeader from '../../components/RecentScreen/RecentListHeader';
 
 const RecentScreen = props => {
 
+	const token = useSelector(state => state.auth.accessToken);
 	const [isLoading, setIsLoading] = useState(false);
 	const [currentlyPlaying, setCurrentlyPlaying] = useState(null);
 	const [recent, setRecent] = useState(null);
 	const [nowPlaying, setNowPlaying] = useState(false);
-	const prev = previousTrack(currentlyPlaying);
+	const prevNowPlaying = prevState(currentlyPlaying);
+	const prevRecent = prevState(recent);
 	const dispatch = useDispatch();
 
-
 	useEffect(() => {
-		console.log('Recent Screen Mounted')
-		setIsLoading(true);
-		getData().then(() => {
-			setIsLoading(false);
-		});
+		console.log('Recent Screen Mounted Current')
 		setIsLoading(true);
 		loadCurrent().then(() => {
 			setIsLoading(false);
 		});
 
-	}, [dispatch, loadCurrent]);
+	}, []);
+
 
 	useEffect(() => {
-	const checkForNew = () => {
-		if (prev !== currentlyPlaying) {
+		console.log('Recent Screen Mounted Data')
+
+		setIsLoading(true);
+		getData().then(() => {
+			setIsLoading(false)
+		})
+
+	}, []);
+
+	useEffect(() => {
+		let mounted = true;
+		let timer;
+		let dataTimer;
+		if (currentlyPlaying && (prevNowPlaying !== currentlyPlaying)) {
 		clearInterval(timer);
-		let timer = setInterval(() => {
-			setNowPlaying(false);
-				loadCurrent().then(() => {
-					setNowPlaying(true);
-				});
+		timer = setInterval(() => {
+				loadCurrent();
 			}, 1000);
 		}
-	};
+		if (prevRecent !== recent) {
+			clearInterval(dataTimer);
+			dataTimer = setInterval(() => {
+				getData();
 
-	checkForNew();
+			}, 1000);
+		}
 
-	}, [prev]);
+	return () => {
+		clearInterval(timer);
+		clearInterval(dataTimer);
+		mounted = false;
+	}
+
+	}, [prevNowPlaying, prevRecent]);
+
+
 
 	const selectTrackHandler = async (id) => {
 		await dispatch(getTrackFeatures(id));
 		await dispatch(getTrack(id));
 		props.navigation.navigate('Track');
 	};
+	
 
-
-
-	function previousTrack(value) {
-		const currentlyPlayingRef = useRef();
+	function prevState(value) {
+		const stateRef = useRef();
 		useEffect(() => {
-			currentlyPlayingRef.current = value;
+			stateRef.current = value;
 		}, [value]);
-		return currentlyPlayingRef;
-	}
-
-
-
-	const loadCurrent = async () => {
-		const current = await getCurrentlyPlaying();
-		setCurrentlyPlaying(current);
+		return stateRef;
 	}
 
 	const getData = async () => {
 		const recentlyPlayed = await getRecentlyPlayed();
 		setRecent(recentlyPlayed);
+	}
+
+	const loadCurrent = async () => {
+		const current = await getCurrentlyPlaying();
+		setCurrentlyPlaying(current);
 	}
 
 
@@ -98,6 +114,9 @@ const RecentScreen = props => {
 					currentlyPlayingImg={currentlyPlaying.item.album.images[0].url}
 					title={currentlyPlaying.item.name}
 					artist={currentlyPlaying.item.artists[0].name}
+					onSelect={() => {
+						selectTrackHandler(currentlyPlaying.item.id);
+					}}
 				/>
 		);
 	}

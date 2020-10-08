@@ -17,25 +17,21 @@ const AuthLoadingScreen = props => {
                 return;
             }
             const transformedData = JSON.parse(userData);
-            const { accessToken, refreshToken, expirationTime } = transformedData;
-            const expirationDate = new Date(expirationTime);
+            const { accessToken, refreshToken, expiryDate } = transformedData;
+            const expirationDate = new Date(expiryDate);
             console.log('EXPIRES AT: ' + expirationDate.toLocaleTimeString())
 
 
-            if (expirationDate <= new Date()) {
-                await dispatch(refreshTokens()).then(() => {
-                    props.navigation.navigate('Tabs');
-                }).catch((err) => {
-                    console.log(err);
-                });
+            if (expirationDate <= new Date() || !accessToken || !refreshToken) {
+                props.navigation.navigate('Auth');
+                return;
             }
 
-            if (accessToken !== undefined) {
-                console.log(userData)
-                props.navigation.navigate('Tabs');
-            }
+            const expirationTime = expirationDate.getTime() - new Date().getTime();
 
-            dispatch(authenticate(accessToken, refreshToken, expirationDate));
+
+            props.navigation.navigate('Tabs');
+            dispatch(authenticate(accessToken, refreshToken, expirationTime));
         };
 
         tryLogin();

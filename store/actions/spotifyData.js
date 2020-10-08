@@ -1,16 +1,19 @@
 import SpotifyWebAPI from 'spotify-web-api-js';
 import AsyncStorage from '@react-native-community/async-storage';
 import { refreshTokens } from './auth';
+import { useSelector } from 'react-redux';
 
 export const USER_INFO = 'USER_INFO';
-export const ARTIST = 'ARTIST';
+export const ARTIST_TOP = 'ARTIST_TOP';
+export const ARTIST_INFO = 'ARTIST_INFO';
 export const TRACK = 'TRACK';
 export const PLAYLIST = 'PLAYLIST';
 export const FEATURES = 'FEATURES';
 
 // Get Valid Spotify Obj
-export const getValidSPObj = async () => {
+const getValidSPObj = async () => {
 	try {
+
 		const userData = await AsyncStorage.getItem('userData');
 		const transformedData = JSON.parse(userData);
 		const accessToken = transformedData.accessToken;
@@ -20,7 +23,8 @@ export const getValidSPObj = async () => {
 		return sp;
 	
 	} catch (err) {
-		throw err;
+		return;
+		//throw err;
 	}
 };
 
@@ -78,11 +82,11 @@ export const getArtist = (artistId) => {
 	return async dispatch => {
 		try {
 			const sp = await getValidSPObj();
-			const artist = await sp.getArtist(artistId);
+			const artistInfo = await sp.getArtist(artistId);
 			
-			dispatch({type: ARTIST, artist: artist});
+			dispatch({type: ARTIST_INFO, artistInfo: artistInfo});
 
-			return artist;
+			return artistInfo;
 
 		} catch (error) {
 			console.log(error)
@@ -99,7 +103,7 @@ export const getArtistTopTracks = (id) => {
 			const artistTopSongs = await sp.getArtistTopTracks(id, 'US');
 
 
-			dispatch({type: ARTIST, artistTopSongs: artistTopSongs});
+			dispatch({type: ARTIST_TOP, artistTopSongs: artistTopSongs});
 			
 		} catch (error) {
 			console.log(error)

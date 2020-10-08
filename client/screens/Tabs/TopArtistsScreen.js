@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { refreshTokens } from '../../../store/actions/auth';
-import { getAllTopArtists, getMediumTopArtists, getShortTopArtists } from '../../../store/actions/spotifyData';
+import { getAllTopArtists, getMediumTopArtists, getShortTopArtists, getArtistTopTracks, getArtist } from '../../../store/actions/spotifyData';
 import { useSelector, useDispatch } from 'react-redux';
 
 import { View, Text, StyleSheet, ActivityIndicator } from 'react-native';
@@ -15,10 +15,10 @@ import AsyncStorage from '@react-native-community/async-storage';
 const TopArtistsScreen = props => {
 
 	const dispatch = useDispatch();
-	const accessToken = useSelector(state => state.auth.accessToken);
 	const [isLoading, setIsLoading] = useState(false);
 	const [topArtists, setTopArtists] = useState(null);
 	const [activeRange, setActiveRange] = useState('long');
+	const token = useSelector(state => state.auth.accessToken);
 
 	
 	useEffect(() => {
@@ -29,24 +29,11 @@ const TopArtistsScreen = props => {
 		});
 
 	}, []);
-
-	useEffect(() => {
-		const refreshLogin = async () => {
-			if (!accessToken) {
-				await dispatch(refreshTokens()).then(() => {
-					props.navigation.navigate('TopArtistsScreen');
-				});
-			}
-		};
-
-		refreshLogin();
-
-	}, [dispatch, accessToken]);
 	
 	const apiCalls = {
-		long: getAllTopArtists(),
-		medium: getMediumTopArtists(),
-		short: getShortTopArtists(),
+		long: getAllTopArtists,
+		medium: getMediumTopArtists,
+		short: getShortTopArtists,
 	};
 
 	const getData = async () => {
@@ -59,6 +46,14 @@ const TopArtistsScreen = props => {
 		setTopArtists(data);
 		setActiveRange(range);
 	}
+
+	const selectArtistHandler = async (id) => {
+		await dispatch(getArtistTopTracks(id));
+		await dispatch(getArtist(id));
+		props.navigation.navigate('Artist', {
+			artistId: id
+		});
+	};
 
 	if (isLoading) {
 		return (
@@ -87,6 +82,9 @@ const TopArtistsScreen = props => {
 							<TopArtistGrid 
 								image={item.images[0].url}
 								name={item.name}
+								onSelect={() => {
+									selectArtistHandler(item.id)
+								}}
 							/>
 						);
 					}}

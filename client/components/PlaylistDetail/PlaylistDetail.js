@@ -1,20 +1,29 @@
 import React from 'react';
-import { View, StyleSheet, Image, Text, Dimensions } from 'react-native';
+import { View, StyleSheet, Image, Text, Dimensions, TouchableOpacity, TouchableNativeFeedback, Platform } from 'react-native';
 
 
 const PlaylistDetail = props => {
 
+  let TouchableCmp = TouchableOpacity;
+
+  if (Platform.OS === 'android' && Platform.Version >= 21) {
+    TouchableCmp = TouchableNativeFeedback;
+  }
+
+
 	return (
 		<View style={styles.container}>
-      <View style={styles.item}>
-        <View style={styles.trackImageContainer}>
-          <Image style={styles.playlistCoverArt} source={{uri: props.image}} />
+      <TouchableCmp onPress={props.onSelect} useForeground>
+        <View style={styles.item}>
+          <View style={styles.trackImageContainer}>
+            <Image style={styles.playlistCoverArt} source={{uri: props.image}} />
+          </View>
+          <View style={styles.titleContainer}>
+            <Text numberOfLines={1} ellipsizeMode='tail' style={styles.songTitle}>{props.title}</Text>
+            <Text style={styles.songArtist}>{props.artist}</Text>
+          </View>
         </View>
-        <View style={styles.titleContainer}>
-          <Text numberOfLines={1} ellipsizeMode='tail' style={styles.songTitle}>{props.title}</Text>
-          <Text style={styles.songArtist}>{props.artist}</Text>
-        </View>
-      </View>
+      </TouchableCmp>
 		</View>
 	);
 

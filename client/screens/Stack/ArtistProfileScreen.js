@@ -1,22 +1,26 @@
 import React, { useState } from 'react';
 import { View, StyleSheet, Image, Text, SafeAreaView, ActivityIndicator, Dimensions } from 'react-native';
-import { useSelector } from 'react-redux';
+import { useSelector, useDispatch } from 'react-redux';
 import ArtistProfile from '../../components/ArtistProfile/ArtistProfile';
-import { getArtistTopTracks } from '../../../store/actions/spotifyData';
+import { getTrackFeatures, getTrack } from '../../../store/actions/spotifyData';
 import { ScrollView } from 'react-native-gesture-handler';
 import Colors from '../../constants/Colors';
-import { convertDuration } from '../../../util';
+import ArtistProfileList from '../../components/ArtistProfile/ArtistProfileList';
 
 
 
 const ArtistProfileScreen = props => {
 
-	const artistId = props.navigation.getParam('artistId');
+	const dispatch = useDispatch();
 	const songs = useSelector(state => state.spotifyData.artistTopSongs);
-	const selectedArtist = useSelector(state => 
-		state.spotifyData.topArtists.items.find(artist => artist.id === artistId)
-		);
+	const selectedArtist = useSelector(state => state.spotifyData.artistInfo);
 	const [isLoading, setIsLoading] = useState(false);
+
+	const selectTrackHandler = async (id) => {
+		await dispatch(getTrackFeatures(id));
+		await dispatch(getTrack(id));
+		props.navigation.navigate('Track');
+	};
 
 
 	if (isLoading) {
@@ -41,18 +45,16 @@ const ArtistProfileScreen = props => {
 							<ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={{marginLeft: 12, marginTop: 20}}>
 								{songs.tracks.map((item, i) => {
 									return (
-										<View style={styles.topSong} key={i}>
-											<View style={styles.trackImageContainer}>
-												<Image style={styles.trackImage} source={{uri: item.album.images[0].url}} />
-											</View>
-											<View style={styles.trackTitleContainer}>
-												<Text numberOfLines={1} ellipsizeMode='tail' style={styles.trackTitle}>{item.name}</Text>
-												<Text numberOfLines={1} ellipsizeMode='tail' style={styles.album}>{item.album.name}</Text>
-											</View>
-											<View style={styles.durationContainer}>
-												<Text style={styles.duration}>{convertDuration(item.duration_ms)}</Text>
-											</View>
-										</View>
+										<ArtistProfileList
+											key={item.id}
+											image={item.album.images[0].url}
+											title={item.name}
+											album={item.album.name}
+											duration={item.duration_ms}
+											onSelect={() => {
+												selectTrackHandler(item.id);
+											}}
+										/>
 									)
 								})}
 							</ScrollView>

@@ -1,9 +1,15 @@
 import React from 'react';
-import { View, StyleSheet, Image, Text, Dimensions} from 'react-native';
+import { View, StyleSheet, Image, Text, Dimensions, TouchableOpacity, TouchableNativeFeedback, Platform} from 'react-native';
 import Colors from '../../constants/Colors';
 
 
 const RecentListHeader = props => {
+
+  let TouchableCmp = TouchableOpacity;
+
+  if (Platform.OS === 'android' && Platform.Version >= 21) {
+    TouchableCmp = TouchableNativeFeedback;
+  }
 
 
     return (
@@ -13,10 +19,12 @@ const RecentListHeader = props => {
             <View style={styles.imageContainer}>
               <Image resizeMode={'contain'} style={{width: '100%', height: '100%'}} source={{uri: props.currentlyPlayingImg}} alt="avatar" />
             </View>
-            <View style={styles.nowPlayingSubContainer}>
-              <Text style={styles.songTitle}>{props.title}</Text>
-              <Text style={styles.artist}>{props.artist}</Text>
-            </View>
+            <TouchableCmp onPress={props.onSelect} useForeground>
+              <View style={styles.nowPlayingSubContainer}>
+                <Text style={styles.songTitle}>{props.title}</Text>
+                <Text style={styles.artist}>{props.artist}</Text>
+              </View>
+            </TouchableCmp>
           </View>
         </View>
     );

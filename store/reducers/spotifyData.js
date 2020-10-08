@@ -1,7 +1,8 @@
 
 import {
     USER_INFO,
-    ARTIST,
+    ARTIST_TOP,
+    ARTIST_INFO,
     TRACK,
     PLAYLIST,
     FEATURES
@@ -12,8 +13,9 @@ const initialState = {
     playlists: null,
     following: null,
     topArtists: null,
-    topTracks: null,
     artistTopSongs: null,
+    artistInfo: null,
+    topTracks: null,
     trackFeatures: null,
     playlist: null,
     trackInfo: null
@@ -30,12 +32,17 @@ export default (state = initialState, action) => {
                 topArtists: action.topArtists,
                 topTracks: action.topTracks,
             };
-        case ARTIST:
+        case ARTIST_TOP:
             return {
                 ...state,
                 topArtists: {...state.topArtists },
-                artistTopSongs: action.artistTopSongs
+                artistTopSongs: action.artistTopSongs,
             };
+        case ARTIST_INFO:
+            return {
+                ...state,
+                artistInfo: action.artistInfo
+            }
         case TRACK:
             return {
                 ...state,

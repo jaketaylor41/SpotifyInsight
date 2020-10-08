@@ -3,7 +3,7 @@ import { View, StyleSheet, Image, Text, TouchableOpacity, TouchableNativeFeedbac
 import { convertDuration } from '../../../util';
 
 
-const TopTracksList = props => {
+const ArtistProfileList = props => {
 
 	let TouchableCmp = TouchableOpacity;
 
@@ -75,4 +75,4 @@ const styles = StyleSheet.create({
 });
 
 
-export default TopTracksList;
+export default ArtistProfileList;

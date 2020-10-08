@@ -2,6 +2,8 @@ import * as AuthSession from 'expo-auth-session';
 import {CLIENT_ID, CLIENT_SECRET, REDIRECT_URI} from 'react-native-dotenv';
 import { encode as btoa } from 'base-64';
 import AsyncStorage from '@react-native-community/async-storage';
+import { NavigationActions } from 'react-navigation';
+
 
 export const AUTHENTICATE = 'AUTHENTICATE';
 export const LOGOUT = 'LOGOUT';
@@ -14,37 +16,39 @@ const saveDataToStorage = (accessToken, refreshToken, expirationTime) => {
         JSON.stringify({
             accessToken: accessToken,
             refreshToken: refreshToken,
-            expirationTime: expirationTime
+            expiryDate: expirationTime
         })
     );
 }
 
 export const authenticate = (accessToken, refreshToken, expirationTime) => {
   return dispatch => {
-    //dispatch(autoRefreshLogin(expirationTime));
+    dispatch(setRefreshTimer(expirationTime));
     dispatch({ type: AUTHENTICATE, accessToken: accessToken, refreshToken: refreshToken});
   };
 };
 
 export const logout = () => {
-	//clearRefreshTimer();
+	clearRefreshTimer();
 	AsyncStorage.removeItem('userData');
 	return { type: LOGOUT };
 };
 
-// const clearRefreshTimer = () => {
-// 	if (timer) {
-// 		clearTimeout(timer);
-// 	};
-// }
+const clearRefreshTimer = () => {
+	if (timer) {
+		clearTimeout(timer);
+		console.log('TIMER CLEARED')
+	};
+}
 
-// const autoRefreshLogin = expirationTime => {
-//   return dispatch => {
-//     timer = setTimeout(() => {
-//       dispatch(refreshTokens());
-//     }, expirationTime);
-//   };
-// };
+const setRefreshTimer = expirationTime => {
+  return dispatch => {
+		console.log('setRefreshTimer Dispatched')
+    timer = setTimeout(() => {
+      dispatch(refreshTokens());
+    }, expirationTime);
+  };
+};
 
 
 const scopesArr = 
@@ -96,16 +100,20 @@ export const getTokens = () => {
 							body: `grant_type=authorization_code&code=${authorizationCode}&redirect_uri=${REDIRECT_URI}`,
 					});
 					const responseJson = await response.json();
+					if (responseJson.error) {
+						return;
+					}
 					const {
 							access_token: accessToken,
 							refresh_token: refreshToken,
 							expires_in: expiresIn,
 					} = responseJson;
 
+					dispatch(authenticate(accessToken, refreshToken, expiresIn * 1000));
+
 					const expirationTime = new Date().getTime() + expiresIn * 1000;
 					saveDataToStorage(accessToken, refreshToken, expirationTime);
-					dispatch(authenticate(accessToken, refreshToken, expirationTime));
-    
+					
         } catch (err) {
             console.error(err);
         }
@@ -115,8 +123,8 @@ export const getTokens = () => {
 
 export const refreshTokens = () => {
     return async dispatch => {
-        try {
-					//clearRefreshTimer();
+			try {
+					clearRefreshTimer();
 					const credsB64 = btoa(`${CLIENT_ID}:${CLIENT_SECRET}`);
 					const userData = await AsyncStorage.getItem('userData');
 					const transformedData = JSON.parse(userData);
@@ -136,11 +144,11 @@ export const refreshTokens = () => {
 							access_token: newAccessToken,
 							expires_in: expiresIn,
 					} = responseJson;
+					dispatch(authenticate(newAccessToken, refresh, expiresIn * 1000));
 							
 					const expirationTime = new Date().getTime() + expiresIn * 1000;
 					console.log('REFRESH FUNC ' + expirationTime);
 					saveDataToStorage(newAccessToken, refresh, expirationTime);
-					dispatch(authenticate(newAccessToken, refresh, expirationTime));
         } catch (err) {
             console.error(err);
         }

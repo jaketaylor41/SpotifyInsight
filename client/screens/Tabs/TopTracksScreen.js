@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import { getTopTracksLong, getTopTracksMedium, getTopTracksShort } from '../../../store/actions/spotifyData';
-import { useSelector, useDispatch } from 'react-redux';
+import { getTopTracksLong, getTopTracksMedium, getTopTracksShort, getTrack, getTrackFeatures } from '../../../store/actions/spotifyData';
+import { useSelector, useDispatch, } from 'react-redux';
 import { View, Text, StyleSheet, ActivityIndicator } from 'react-native';
 import Colors from '../../constants/Colors';
 import { FlatList, ScrollView } from 'react-native-gesture-handler';
@@ -14,39 +14,33 @@ import AsyncStorage from '@react-native-community/async-storage';
 const TopTracksScreen = props => {
 
 	const dispatch = useDispatch();
-	const accessToken = useSelector(state => state.auth.accessToken);
 	const [isLoading, setIsLoading] = useState(false);
 	const [topTracks, setTopTracks] = useState(null);
 	const [activeRange, setActiveRange] = useState('long');
+	const token = useSelector(state => state.auth.accessToken);
+
 
 	
 	useEffect(() => {
-
+		let mounted = true;
 		setIsLoading(true);
-		getData().then(() => {
-			setIsLoading(false)
-		});
+		if (mounted) {
+			getData().then(() => {
+				setIsLoading(false)
+			});
+		}
 		
+		return () => {
+			mounted = false;
+		}
+
 	}, []);
-
-	useEffect(() => {
-		const refreshLogin = async () => {
-			if (!accessToken) {
-				await dispatch(refreshTokens()).then(() => {
-					props.navigation.navigate('TopTracksScreen');
-				});
-			}
-		};
-
-		refreshLogin();
-
-	}, [dispatch, accessToken]);
 
 
 	const apiCalls = {
-		long: getTopTracksLong(),
-		medium: getTopTracksMedium(),
-		short: getTopTracksShort(),
+		long: getTopTracksLong,
+		medium: getTopTracksMedium,
+		short: getTopTracksShort,
 	};
 
 	const getData = async () => {
@@ -59,6 +53,12 @@ const TopTracksScreen = props => {
 		setTopTracks(data);
 		setActiveRange(range);
 	}
+
+	const selectTrackHandler = async (id) => {
+		await dispatch(getTrackFeatures(id));
+		await dispatch(getTrack(id));
+		props.navigation.navigate('Track');
+	};
 
 
 	if (isLoading) {
@@ -89,6 +89,9 @@ const TopTracksScreen = props => {
 								title={item.name}
 								album={item.album.name}
 								duration={item.duration_ms}
+								onSelect={() => {
+									selectTrackHandler(item.id)
+								}}
 							/>
 						);
 					}}

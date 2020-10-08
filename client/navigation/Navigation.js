@@ -58,22 +58,62 @@ const ProfileNavigator = createStackNavigator(
 );
 
 const RecentsNavigator = createStackNavigator(
-    {
-        Recents: {
-						screen: RecentScreen,
-						navigationOptions: {
-							headerShown: false
-						}
-				},
+	{
+		Recents: {
+				screen: RecentScreen,
+				navigationOptions: {
+					headerShown: false
+				}
+		},
+		Track: {
+				screen: TrackAnalysisScreen
+		}
+	},
+	{
+		defaultNavigationOptions: defaultNavOptions,
+		headerMode: 'screen'
+	}
+
+);
+
+const TopTracksNavigator = createStackNavigator(
+	{
+		TopTracks: {
+				screen: TopTracksScreen,
+				navigationOptions: {
+					headerShown: false
+				}
+		},
+		Track: {
+				screen: TrackAnalysisScreen
+		}
+	},
+	{
+		defaultNavigationOptions: defaultNavOptions,
+		headerMode: 'screen'
+	}
+
+);
+
+const TopArtistsNavigator = createStackNavigator(
+	{
+		TopArtists: {
+				screen: TopArtistsScreen,
+				navigationOptions: {
+					headerShown: false
+				}
+		},
+		Artist: {
+				screen: ArtistProfileScreen
+		},
         Track: {
             screen: TrackAnalysisScreen
         }
-        
-    },
-    {
-        defaultNavigationOptions: defaultNavOptions,
-        headerMode: 'screen'
-    }
+	},
+	{
+		defaultNavigationOptions: defaultNavOptions,
+		headerMode: 'screen'
+	}
 
 );
 
@@ -86,13 +126,13 @@ const TabNavigator = createMaterialBottomTabNavigator(
             },
             
         }},
-        TopArtists: {screen: TopArtistsScreen, navigationOptions: {
+        TopArtists: {screen: TopArtistsNavigator, navigationOptions: {
             tabBarIcon: (tabInfo) => {
                 return <Entypo name="modern-mic" size={24} color={tabInfo.tintColor}/>;
             },
             title: 'Top Artists',
         }},
-        TopTracks: {screen: TopTracksScreen, navigationOptions: {
+        TopTracks: {screen: TopTracksNavigator, navigationOptions: {
             tabBarIcon: (tabInfo) => {
                 return <FontAwesome name="music" size={24} color={tabInfo.tintColor}/>;
             },
