@@ -33,7 +33,7 @@ const getValidSPObj = async () => {
 export const dispatchUser = () => {
 	return async dispatch => {
 		try {
-			
+			console.log('DISPATCHUSER')
 			const { user, followedArtists, playlists, topArtists, topTracks } = await getUserInfo();
 
 			dispatch({type: USER_INFO, user: user, playlists: playlists, following: followedArtists, topArtists: topArtists, topTracks: topTracks });
@@ -48,6 +48,7 @@ export const dispatchUser = () => {
 // Get All User Info
 export const getUserInfo = async () => {
 	try {
+		console.log('GETUSERINFO')
 			const sp = await getValidSPObj();
 			const user = await sp.getMe();
 
@@ -56,7 +57,7 @@ export const getUserInfo = async () => {
 			const { items: playlists } = await sp.getUserPlaylists(userId, { limit: 50 });
 
 			// Get Followed Artists
-			const followedArtists = await sp.getFollowedArtists();
+			const followedArtists = await sp.getFollowedArtists({ limit: 50 });
 
 			// Get a Users Top Artists
 			const topArtists = await sp.getMyTopArtists({time_range: 'long_term'});
@@ -273,6 +274,45 @@ export const getDevices = async () => {
 		const devices = await sp.getMyDevices();
 
 		return devices;
+
+	} catch (error) {
+		console.log(error)
+	}
+};
+
+// Check if User Follows Artist
+export const isFollowing = async (id) => {
+	try {
+		const sp = await getValidSPObj();
+		const following = await sp.isFollowingArtists([id]);
+
+		return following;
+
+	} catch (error) {
+		console.log(error)
+	}
+};
+
+// Follow an Artist
+export const followArtist = async (id) => {
+	try {
+		const sp = await getValidSPObj();
+		const follow = await sp.followArtists([id]);
+
+		return follow;
+
+	} catch (error) {
+		console.log(error)
+	}
+};
+
+// Unfollow an Artist
+export const unfollowArtist = async (id) => {
+	try {
+		const sp = await getValidSPObj();
+		const unfollow = await sp.unfollowArtists([id]);
+
+		return unfollow;
 
 	} catch (error) {
 		console.log(error)

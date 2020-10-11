@@ -26,6 +26,7 @@ export default (state = initialState, action) => {
     switch (action.type) {
         case USER_INFO:
             return {
+                ...state,
                 user: action.user,
                 playlists: action.playlists,
                 following: action.following,

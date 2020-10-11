@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { getTopTracksLong, getTopTracksMedium, getTopTracksShort, getTrack, getTrackFeatures } from '../../../store/actions/spotifyData';
 import { useSelector, useDispatch, } from 'react-redux';
 import { View, Text, StyleSheet, ActivityIndicator } from 'react-native';
@@ -17,40 +17,30 @@ const TopTracksScreen = props => {
 	const [isLoading, setIsLoading] = useState(false);
 	const [topTracks, setTopTracks] = useState(null);
 	const [activeRange, setActiveRange] = useState('long');
+	const isMountedRef = useRef(null);
 	const token = useSelector(state => state.auth.accessToken);
 
 
-	
 	useEffect(() => {
-		let mounted = true;
-		setIsLoading(true);
-		if (mounted) {
-			getData().then(() => {
-				setIsLoading(false)
-			});
+		isMountedRef.current = true;
+		const apiCalls = {
+			long: getTopTracksLong(),
+			medium: getTopTracksMedium(),
+			short: getTopTracksShort(),
+		};
+
+		const getRange = async () => {
+			const data = await apiCalls[activeRange];
+			setTopTracks(data);
 		}
-		
-		return () => {
-			mounted = false;
+
+		if(isMountedRef.current){
+			getRange();
 		}
+	}, [activeRange]);
 
-	}, []);
-
-
-	const apiCalls = {
-		long: getTopTracksLong,
-		medium: getTopTracksMedium,
-		short: getTopTracksShort,
-	};
-
-	const getData = async () => {
-		const data = await getTopTracksLong();
-		setTopTracks(data);
-	}
 
 	const changeRangeHandler = async (range) => {
-		const data = await apiCalls[range];
-		setTopTracks(data);
 		setActiveRange(range);
 	}
 
@@ -70,14 +60,15 @@ const TopTracksScreen = props => {
 	}
 
     return (
-			<SafeAreaView style={styles.screen}>
+			<SafeAreaView style={styles.screen} key={activeRange}>
 				<TopTracksHeader 
 					onPressLong={() => changeRangeHandler('long')}
 					onPressMedium={() => changeRangeHandler('medium')}
 					onPressShort={() => changeRangeHandler('short')}
 					isActive={activeRange}
 				/>
-				{topTracks ? <FlatList 
+				{topTracks ?
+				<FlatList 
 					keyExtractor={item => item.id}
 					contentContainerStyle={{marginLeft: 12, marginRight: 12, marginTop: 20}}
 					data={topTracks.items}

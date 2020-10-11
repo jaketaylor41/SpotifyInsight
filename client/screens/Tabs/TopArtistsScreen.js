@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect, useCallback, useRef } from 'react';
 import { refreshTokens } from '../../../store/actions/auth';
 import { getAllTopArtists, getMediumTopArtists, getShortTopArtists, getArtistTopTracks, getArtist } from '../../../store/actions/spotifyData';
 import { useSelector, useDispatch } from 'react-redux';
@@ -18,34 +18,32 @@ const TopArtistsScreen = props => {
 	const [isLoading, setIsLoading] = useState(false);
 	const [topArtists, setTopArtists] = useState(null);
 	const [activeRange, setActiveRange] = useState('long');
+	const isMountedRef = useRef(null);
 	const token = useSelector(state => state.auth.accessToken);
 
-	
+
 	useEffect(() => {
+		isMountedRef.current = true;
+		const apiCalls = {
+			long: getAllTopArtists(),
+			medium: getMediumTopArtists(),
+			short: getShortTopArtists(),
+		};
 
-		setIsLoading(true);
-		getData().then(() => {
-			setIsLoading(false);
-		});
+		const getRange = async () => {
+			const data = await apiCalls[activeRange];
+			setTopArtists(data);
+		}
+		if(isMountedRef.current){
+			getRange();
+		}
+	}, [activeRange]);
 
-	}, []);
+
 	
-	const apiCalls = {
-		long: getAllTopArtists,
-		medium: getMediumTopArtists,
-		short: getShortTopArtists,
-	};
-
-	const getData = async () => {
-		const data = await getAllTopArtists();
-		setTopArtists(data);
-	}
-	
-	const changeRangeHandler = async (range) => {
-		const data = await apiCalls[range];
-		setTopArtists(data);
+	const changeRangeHandler = (range) => {
 		setActiveRange(range);
-	}
+	};
 
 	const selectArtistHandler = async (id) => {
 		await dispatch(getArtistTopTracks(id));
@@ -63,38 +61,37 @@ const TopArtistsScreen = props => {
 		);
 	}
 
-    return (
-			<SafeAreaView style={styles.screen}>
-				<TopArtistHeader
-					onPressLong={() => changeRangeHandler('long')}
-					onPressMedium={() => changeRangeHandler('medium')}
-					onPressShort={() => changeRangeHandler('short')}
-					isActive={activeRange}
-				/>
-				{topArtists ? <FlatList 
-					keyExtractor={item => item.id}
-					contentContainerStyle={{marginLeft: 12, marginRight: 12, marginTop: 20}}
-					data={topArtists.items}
-					numColumns={2}
-					showsVerticalScrollIndicator={false}
-					renderItem={({item}) => {
-						return (
-							<TopArtistGrid 
-								image={item.images[0].url}
-								name={item.name}
-								onSelect={() => {
-									selectArtistHandler(item.id)
-								}}
-							/>
-						);
-					}}
-				
-			/> : 	<View style={styles.centered}>
-							<ActivityIndicator size="small" />
-						</View>}
-			</SafeAreaView>
-    );
-
+	return (
+		<SafeAreaView style={styles.screen}>
+			<TopArtistHeader
+				onPressLong={() => changeRangeHandler('long')}
+				onPressMedium={() => changeRangeHandler('medium')}
+				onPressShort={() => changeRangeHandler('short')}
+				isActive={activeRange}
+			/>
+			{topArtists ? <FlatList 
+				keyExtractor={item => item.id}
+				contentContainerStyle={{marginLeft: 12, marginRight: 12, marginTop: 20}}
+				data={topArtists.items}
+				numColumns={2}
+				showsVerticalScrollIndicator={false}
+				renderItem={({item}) => {
+					return (
+						<TopArtistGrid 
+							image={item.images[0].url}
+							name={item.name}
+							onSelect={() => {
+								selectArtistHandler(item.id)
+							}}
+						/>
+					);
+				}}
+			
+		/> : 	<View style={styles.centered}>
+						<ActivityIndicator size="small" />
+					</View>}
+		</SafeAreaView>
+	);
 };
 
 

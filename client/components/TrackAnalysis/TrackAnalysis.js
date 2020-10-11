@@ -1,7 +1,8 @@
 import React, {useState} from 'react';
-import { View, StyleSheet, Image, Text, Dimensions  } from 'react-native';
+import { View, StyleSheet, Image, Text, Dimensions, Linking  } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
 import Colors from '../../constants/Colors';
+import PlayButton from '../UI/PlayButton';
 
 const TrackAnalysis = props => {
 
@@ -34,6 +35,7 @@ const TrackAnalysis = props => {
 							</LinearGradient>
 						</View>
 					</View>
+							<PlayButton onPress={() => Linking.openURL(props.playUri)}/>
 				</View>
 			</View>
     );
@@ -61,7 +63,7 @@ const styles = StyleSheet.create({
 		fontFamily: 'montserrat-bold',
 		color: '#fff',
 		paddingTop: 15,
-		fontSize: 40,
+		fontSize: 35,
 		marginLeft: 12,
 		textAlign: 'left',
 	},
@@ -71,17 +73,20 @@ const styles = StyleSheet.create({
 		color: '#fff',
 		textAlign: 'left',
 		marginLeft: 12,
-		marginBottom: 5,
+		paddingTop: 5,
+		paddingBottom: 5,
 	},
 	releaseYear: {
 		textAlign: 'center',
 		fontFamily: 'montserrat-semi-bold',
 		color: '#fff',
 		textAlign: 'left',
-		marginBottom: 5,
+		paddingTop: 5,
+		paddingBottom: 5,
 	},
 	subTextContainer: {
-		flexDirection: 'row'
+		flexDirection: 'row',
+		maxWidth: 204
 	}
 
 });

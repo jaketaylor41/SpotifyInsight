@@ -1,6 +1,6 @@
 import React from 'react';
-import { createAppContainer, createSwitchNavigator } from 'react-navigation';
-import { createStackNavigator } from 'react-navigation-stack';
+import { createAppContainer, createSwitchNavigator, NavigationActions } from 'react-navigation';
+import { createStackNavigator, HeaderBackButton } from 'react-navigation-stack';
 
 import LoginScreen from '../screens/LoginScreen';
 import ProfileScreen from '../screens/Tabs/ProfileScreen';
@@ -21,6 +21,7 @@ import Colors from '../constants/Colors';
 import { FontAwesome, Entypo, Ionicons, MaterialCommunityIcons } from '@expo/vector-icons';
 import { createMaterialBottomTabNavigator } from 'react-navigation-material-bottom-tabs';
 import { createDrawerNavigator, DrawerItems } from 'react-navigation-drawer';
+import { color } from 'react-native-reanimated';
 
 
 
@@ -42,13 +43,25 @@ const ProfileNavigator = createStackNavigator(
             screen: ProfileScreen
         },
         Artist: {
-            screen: ArtistProfileScreen
+            screen: ArtistProfileScreen,
+            navigationOptions: {
+                headerBackTitleVisible: false,
+                headerTintColor: '#fff'
+            }
         },
         Track: {
-            screen: TrackAnalysisScreen
+            screen: TrackAnalysisScreen,
+            navigationOptions: {
+                headerBackTitleVisible: false,
+                headerTintColor: '#fff'
+            }
         },
         Playlist: {
-            screen: PlaylistDetailScreen
+            screen: PlaylistDetailScreen,
+            navigationOptions: {
+                headerBackTitleVisible: false,
+                headerTintColor: '#fff'
+            }
         }
 	},
 	{
@@ -66,7 +79,11 @@ const RecentsNavigator = createStackNavigator(
 				}
 		},
 		Track: {
-				screen: TrackAnalysisScreen
+                screen: TrackAnalysisScreen,
+                navigationOptions: {
+                    headerBackTitleVisible: false,
+                    headerTintColor: '#fff'
+                }
 		}
 	},
 	{
@@ -85,7 +102,11 @@ const TopTracksNavigator = createStackNavigator(
 				}
 		},
 		Track: {
-				screen: TrackAnalysisScreen
+                screen: TrackAnalysisScreen,
+                navigationOptions: {
+                    headerBackTitleVisible: false,
+                    headerTintColor: '#fff'
+                }
 		}
 	},
 	{
@@ -104,14 +125,23 @@ const TopArtistsNavigator = createStackNavigator(
 				}
 		},
 		Artist: {
-				screen: ArtistProfileScreen
+                screen: ArtistProfileScreen,
+                navigationOptions: {
+                    headerBackTitleVisible: false,
+                    headerTintColor: '#fff'
+                }
 		},
         Track: {
-            screen: TrackAnalysisScreen
+            screen: TrackAnalysisScreen,
+            navigationOptions: {
+                headerBackTitleVisible: false,
+                headerTintColor: '#fff'
+            }
         }
 	},
 	{
-		defaultNavigationOptions: defaultNavOptions,
+        defaultNavigationOptions: defaultNavOptions,
+        
 		headerMode: 'screen'
 	}
 

@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { useSelector, useDispatch, useRef } from 'react-redux';
 
-import { View, Text, StyleSheet, ActivityIndicator, Image } from 'react-native';
+import { View, Text, StyleSheet, ActivityIndicator, Image, Platform, RefreshControl } from 'react-native';
 import { FlatList, ScrollView } from 'react-native-gesture-handler';
 import { HeaderButtons, Item } from 'react-navigation-header-buttons';
 import { SafeAreaView } from 'react-native-safe-area-context';
@@ -26,14 +26,14 @@ const ProfileScreen = props => {
     const following = useSelector(state => state.spotifyData.following);
     const topArtists = useSelector(state => state.spotifyData.topArtists);
     const topTracks = useSelector(state => state.spotifyData.topTracks);
-    const token = useSelector(state => state.auth.accessToken);
     const [isLoading, setIsLoading] = useState(false);
+    const [isRefreshing, setisRefreshing] = useState(false);
 
 
     const loadUserProfile = useCallback(async () => {
       let mounted = true;
       console.log('PROFILE TAB LOADED');
-      setIsLoading(true);
+      setisRefreshing(true);
       try {
         if (mounted) {
           await dispatch(dispatchUser());
@@ -43,11 +43,11 @@ const ProfileScreen = props => {
           console.log(err);
         }
       }
-      setIsLoading(false);
+      setisRefreshing(false);
       return () => {
         mounted = false
       }
-    }, [dispatch, setIsLoading]);
+    }, [dispatch, setisRefreshing]);
 
     useEffect(() => {
       let mounted = true;
@@ -105,7 +105,14 @@ const ProfileScreen = props => {
 
     return (
       <SafeAreaView style={styles.screen}>
-        <ScrollView showsVerticalScrollIndicator={false} nestedScrollEnabled={true} style={styles.screen} contentContainerStyle={{ flexGrow: 1, justifyContent: 'flex-start' }}>
+        <ScrollView
+          showsVerticalScrollIndicator={false}
+          nestedScrollEnabled={true} style={styles.screen}
+          contentContainerStyle={{ flexGrow: 1, justifyContent: 'flex-start' }}
+          refreshControl={
+            <RefreshControl tintColor={Colors.green} refreshing={isRefreshing} onRefresh={loadUserProfile} />
+          }
+        >
             <View>
               <ProfileHeader image={user.images[0].url} name={user.display_name} />
             </View>

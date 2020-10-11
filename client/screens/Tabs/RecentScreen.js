@@ -3,9 +3,9 @@ import React, { useState, useEffect, useCallback, useRef } from 'react';
 import { getRecentlyPlayed, getCurrentlyPlaying, getTrackFeatures, getTrack } from '../../../store/actions/spotifyData';
 import { useSelector, useDispatch } from 'react-redux';
 
-import { View, Text, StyleSheet, ActivityIndicator } from 'react-native';
+import { View, Text, StyleSheet, ActivityIndicator, RefreshControl } from 'react-native';
 import Colors from '../../constants/Colors';
-import { FlatList, ScrollView } from 'react-native-gesture-handler';
+import { ScrollView } from 'react-native-gesture-handler';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
 import RecentList from '../../components/RecentScreen/RecentList';
@@ -14,27 +14,14 @@ import RecentListHeader from '../../components/RecentScreen/RecentListHeader';
 
 const RecentScreen = props => {
 
-	const token = useSelector(state => state.auth.accessToken);
 	const [isLoading, setIsLoading] = useState(false);
+	const [isRefreshing, setIsRefreshing] = useState(false);
 	const [currentlyPlaying, setCurrentlyPlaying] = useState(null);
 	const [recent, setRecent] = useState(null);
-	const [nowPlaying, setNowPlaying] = useState(false);
-	const prevNowPlaying = prevState(currentlyPlaying);
-	const prevRecent = prevState(recent);
 	const dispatch = useDispatch();
 
 	useEffect(() => {
 		console.log('Recent Screen Mounted Current')
-		setIsLoading(true);
-		loadCurrent().then(() => {
-			setIsLoading(false);
-		});
-
-	}, []);
-
-
-	useEffect(() => {
-		console.log('Recent Screen Mounted Data')
 
 		setIsLoading(true);
 		getData().then(() => {
@@ -43,59 +30,27 @@ const RecentScreen = props => {
 
 	}, []);
 
-	useEffect(() => {
-		let mounted = true;
-		let timer;
-		let dataTimer;
-		if (currentlyPlaying && (prevNowPlaying !== currentlyPlaying)) {
-		clearInterval(timer);
-		timer = setInterval(() => {
-				loadCurrent();
-			}, 1000);
-		}
-		if (prevRecent !== recent) {
-			clearInterval(dataTimer);
-			dataTimer = setInterval(() => {
-				getData();
-
-			}, 1000);
-		}
-
-	return () => {
-		clearInterval(timer);
-		clearInterval(dataTimer);
-		mounted = false;
-	}
-
-	}, [prevNowPlaying, prevRecent]);
-
-
 
 	const selectTrackHandler = async (id) => {
 		await dispatch(getTrackFeatures(id));
 		await dispatch(getTrack(id));
 		props.navigation.navigate('Track');
 	};
-	
 
-	function prevState(value) {
-		const stateRef = useRef();
-		useEffect(() => {
-			stateRef.current = value;
-		}, [value]);
-		return stateRef;
-	}
 
 	const getData = async () => {
-		const recentlyPlayed = await getRecentlyPlayed();
-		setRecent(recentlyPlayed);
-	}
+		setIsRefreshing(true);
+		try {
+			const recentlyPlayed = await getRecentlyPlayed();
+			const current = await getCurrentlyPlaying();
+			setRecent(recentlyPlayed);
+			setCurrentlyPlaying(current);
 
-	const loadCurrent = async () => {
-		const current = await getCurrentlyPlaying();
-		setCurrentlyPlaying(current);
+		} catch (error) {
+			console.log(error);
+		}
+		setIsRefreshing(false);
 	}
-
 
 	if (isLoading) {
 		return (
@@ -123,7 +78,13 @@ const RecentScreen = props => {
 
     return (
 			<SafeAreaView style={styles.screen}>
-				<ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={{marginLeft: 12, marginRight: 12}}>
+				<ScrollView
+				showsVerticalScrollIndicator={false}
+				contentContainerStyle={{marginLeft: 12, marginRight: 12}}
+				refreshControl={
+          <RefreshControl tintColor={Colors.green} refreshing={isRefreshing} onRefresh={getData} />
+        }
+      	>
 					{playing}
 					<View style={currentlyPlaying ? styles.sectionTitleContainerShow : styles.sectionTitleContainerHide}>
 						<Text style={styles.sectionTitle}>Recently Played</Text>

@@ -1,11 +1,15 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { View, StyleSheet, Image, Text, SafeAreaView, ActivityIndicator, Dimensions } from 'react-native';
 import { useSelector, useDispatch } from 'react-redux';
 import ArtistProfile from '../../components/ArtistProfile/ArtistProfile';
-import { getTrackFeatures, getTrack } from '../../../store/actions/spotifyData';
+import { getTrackFeatures, getTrack, isFollowing, followArtist, unfollowArtist, dispatchUser } from '../../../store/actions/spotifyData';
 import { ScrollView } from 'react-native-gesture-handler';
 import Colors from '../../constants/Colors';
 import ArtistProfileList from '../../components/ArtistProfile/ArtistProfileList';
+import { HeaderButton } from '../../components/UI/HeaderButton';
+import { HeaderButtons, Item } from 'react-navigation-header-buttons';
+
+import { FontAwesome, Entypo, Ionicons, MaterialCommunityIcons } from '@expo/vector-icons';
 
 
 
@@ -14,7 +18,37 @@ const ArtistProfileScreen = props => {
 	const dispatch = useDispatch();
 	const songs = useSelector(state => state.spotifyData.artistTopSongs);
 	const selectedArtist = useSelector(state => state.spotifyData.artistInfo);
-	const [isLoading, setIsLoading] = useState(false);
+	const [isLoading, setIsLoading] = useState(null);
+	const [following, setIsFollowing] = useState(false);
+	const artistId = props.navigation.getParam('artistId');
+
+	
+	const checkFollowing = async () => {
+		const data = await isFollowing(artistId);
+		setIsFollowing(data[0]);
+	}
+
+	const followArtistHandler = async () => {
+		setIsFollowing(s => !s);
+	};
+	
+	
+	useEffect(() => {
+		let mounted = true;
+		if (mounted) {
+			checkFollowing();
+		};
+		
+		
+		return () => {
+			mounted = false;
+		}
+		
+	}, [setIsFollowing]);
+	
+	console.log('==================')
+	console.log(following)
+	console.log('==================')
 
 	const selectTrackHandler = async (id) => {
 		await dispatch(getTrackFeatures(id));
@@ -41,6 +75,19 @@ const ArtistProfileScreen = props => {
 							name={selectedArtist.name}
 							followers={selectedArtist.followers.total}
 							genres={selectedArtist.genres}
+							following={following}
+							onPress={() => {
+								followArtistHandler().then(() => {
+									if (!following) {
+										followArtist(artistId);
+										console.log('FOLLOWED')
+									}
+									if (following) {
+										unfollowArtist(artistId);
+										console.log('UNFOLLOWED')
+									}
+								})
+							}}
 						/>
 							<ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={{marginLeft: 12, marginTop: 20}}>
 								{songs.tracks.map((item, i) => {

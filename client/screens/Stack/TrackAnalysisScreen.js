@@ -65,6 +65,7 @@ const TrackAnalysisScreen = props => {
 						name={selectedTrack.name}
 						artist={selectedTrack.artists[0].name}
 						release={selectedTrack.album.release_date.slice(0,4)}
+						playUri={selectedTrack.external_urls.spotify}
 					/> }
 					<View style={styles.sectionTitleContainer}>
 						<Text style={styles.sectionTitle}>Track Features</Text>
@@ -120,7 +121,7 @@ const TrackAnalysisScreen = props => {
 				<View style={styles.modalBtnContainer}>
 					<ModalButton onPress={() => setIsAddMode(true)}>Feature Descriptions</ModalButton>
 				</View>
-				<Modal visible={isAddMode} dismissable animationType='slide'>
+				<Modal transparent={true} visible={isAddMode} dismissable animationType='slide'>
 					<ModalBody onCancel={closeModal} />
 				</Modal>
 				</ScrollView>	

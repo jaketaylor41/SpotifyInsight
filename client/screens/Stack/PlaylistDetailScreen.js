@@ -32,6 +32,7 @@ const PlaylistDetailScreen = props => {
         playlistTitle={playlist.name}
         followers={playlist.followers.total}
         creator={playlist.owner.display_name}
+        playUri={playlist.external_urls.spotify}
       />
       {playlist.tracks.items.map((item, i) => {
         return (
