@@ -29,7 +29,7 @@ const FeaturesGrid = props => {
     );
 
 };
-
+const screenWidth = Dimensions.get('window').width
 const styles = StyleSheet.create({
 
 	container: {
@@ -38,7 +38,7 @@ const styles = StyleSheet.create({
 		alignSelf: 'center',
 		justifyContent: 'space-evenly',
 		marginBottom: 50,
-		maxWidth: '95%'
+		maxWidth: screenWidth
 	},
 	cell: {
 		flex: 1,

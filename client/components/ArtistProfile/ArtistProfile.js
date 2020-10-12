@@ -3,11 +3,18 @@ import { View, StyleSheet, Image, Text, Dimensions, TouchableOpacity  } from 're
 import { LinearGradient } from 'expo-linear-gradient';
 import { Entypo } from '@expo/vector-icons';
 import Colors from '../../constants/Colors';
+import 'intl';
+import 'intl/locale-data/jsonp/en';
 
 
 const TopArtist = props => {
 
 	const formatNum = new Intl.NumberFormat();
+	if (typeof Intl === 'undefined') {
+    require('intl')  
+    require('intl/locale-data/jsonp/en')  
+	}
+
 	const [imgWidth, setImageWidth] = useState();
 	const [imgHeight, setImageHeight] = useState();
 

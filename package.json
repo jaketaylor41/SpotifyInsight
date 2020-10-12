@@ -21,6 +21,7 @@
     "expo-linear-gradient": "~8.2.1",
     "expo-status-bar": "^1.0.2",
     "expo-web-browser": "~8.3.1",
+    "intl": "^1.2.5",
     "nodemon": "^2.0.4",
     "querystring": "^0.2.0",
     "react": "~16.11.0",
