@@ -6,8 +6,8 @@ import Colors from '../../constants/Colors';
 
 const PlayButton = props => {
 
-    return <TouchableOpacity onPress={props.onPress}>
-        <View style={styles.button}>
+    return <TouchableOpacity style={styles.button} onPress={props.onPress}>
+        <View>
           <Ionicons name={Platform.OS === 'android' ? 'md-play' : 'ios-play'} size={50} color="white" />
         </View> 
     </TouchableOpacity>
@@ -31,8 +31,7 @@ const styles = StyleSheet.create({
       shadowColor: 'black',
       shadowOpacity: 0.26,
       shadowOffset: { width: 0, height: 2 },
-      shadowRadius: 8,
-      elevation: 5,
+      shadowRadius: 8
     }
 
 });

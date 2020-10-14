@@ -24,7 +24,6 @@ const getValidSPObj = async () => {
 	
 	} catch (err) {
 		return;
-		//throw err;
 	}
 };
 

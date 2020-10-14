@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState } from 'react';
 import { View, StyleSheet, Text, SafeAreaView, ActivityIndicator, Dimensions, Modal } from 'react-native';
 import { useSelector } from 'react-redux';
 import { ScrollView } from 'react-native-gesture-handler';
@@ -14,10 +14,8 @@ import { convertDuration, convertPitch, Gradient } from '../../../util';
 
 
 const TrackAnalysisScreen = props => {
-
-	const trackId = props.navigation.getParam('trackId');
+	
 	const [isLoading, setIsLoading] = useState(false);
-	//const trackAnalysis = useSelector(state => state.spotifyData.trackAnalysis);
 	const trackFeatures = useSelector(state => state.spotifyData.trackFeatures);
 	const selectedTrack = useSelector(state => state.spotifyData.trackInfo);
 	const [chartValues, setValues] = useState([]);

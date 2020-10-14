@@ -1,6 +1,5 @@
 import React from 'react';
 import { View, StyleSheet, Image, Text, Dimensions, TouchableOpacity, TouchableNativeFeedback, Platform} from 'react-native';
-import Colors from '../../constants/Colors';
 
 
 const RecentListHeader = props => {

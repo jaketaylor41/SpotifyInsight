@@ -1,7 +1,6 @@
 import React, {useState} from 'react';
 import { View, StyleSheet, Image, Text, Dimensions, Linking  } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
-import Colors from '../../constants/Colors';
 import PlayButton from '../UI/PlayButton';
 
 const TrackAnalysis = props => {

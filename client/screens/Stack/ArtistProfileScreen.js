@@ -80,11 +80,9 @@ const ArtistProfileScreen = props => {
 								followArtistHandler().then(() => {
 									if (!following) {
 										followArtist(artistId);
-										console.log('FOLLOWED')
 									}
 									if (following) {
 										unfollowArtist(artistId);
-										console.log('UNFOLLOWED')
 									}
 								})
 							}}

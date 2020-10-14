@@ -1,5 +1,5 @@
-import React, { useState, useEffect } from 'react';
-import { View, StyleSheet, SafeAreaView, FlatList } from 'react-native';
+import React from 'react';
+import { StyleSheet, SafeAreaView } from 'react-native';
 import Colors from '../../constants/Colors';
 
 import { useSelector, useDispatch } from 'react-redux';
@@ -11,10 +11,7 @@ import PlaylistDetailHeader from '../../components/PlaylistDetail/PlaylistDetail
 
 
 const PlaylistDetailScreen = props => {
-  const playlistId = props.navigation.getParam('playlistId');
-  const selectedPlaylist = useSelector(state => 
-    state.spotifyData.playlists.find(playlist => playlist.id === playlistId)
-    );
+  
   const playlist = useSelector(state => state.spotifyData.playlist);
   const dispatch = useDispatch();
 

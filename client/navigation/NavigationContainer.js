@@ -8,7 +8,6 @@ const NavigationContainer = props => {
   const isAuth = useSelector(state => !!state.auth.accessToken);
 
   useEffect(() => {
-    console.log('Inside NavigationContainer')
     if (!isAuth) {
       navRef.current.dispatch(
         NavigationActions.navigate({ routeName: 'Starter' })

@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, StyleSheet, Image, Text, Dimensions  } from 'react-native';
+import { View, StyleSheet, Text, Dimensions  } from 'react-native';
 
 const FeaturesGrid = props => {
 

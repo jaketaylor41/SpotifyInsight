@@ -1,7 +1,7 @@
 import React, { useEffect } from 'react';
 import { View, StyleSheet, Text, ActivityIndicator } from 'react-native';
 import AsyncStorage from '@react-native-community/async-storage';
-import { refreshTokens, authenticate } from '../../store/actions/auth';
+import { authenticate } from '../../store/actions/auth';
 import { useDispatch } from 'react-redux';
 import Colors from '../constants/Colors';
 
@@ -9,7 +9,6 @@ const AuthLoadingScreen = props => {
     const dispatch = useDispatch();
 
     useEffect(() => {
-        console.log('Inside AuthLoadingScreen.js')
         const tryLogin = async () => {
             const userData = await AsyncStorage.getItem('userData');
             if (!userData) {
@@ -19,7 +18,6 @@ const AuthLoadingScreen = props => {
             const transformedData = JSON.parse(userData);
             const { accessToken, refreshToken, expiryDate } = transformedData;
             const expirationDate = new Date(expiryDate);
-            console.log('EXPIRES AT: ' + expirationDate.toLocaleTimeString())
 
 
             if (expirationDate <= new Date() || !accessToken || !refreshToken) {

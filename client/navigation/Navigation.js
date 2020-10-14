@@ -1,6 +1,6 @@
 import React from 'react';
-import { createAppContainer, createSwitchNavigator, NavigationActions } from 'react-navigation';
-import { createStackNavigator, HeaderBackButton } from 'react-navigation-stack';
+import { createAppContainer, createSwitchNavigator } from 'react-navigation';
+import { createStackNavigator } from 'react-navigation-stack';
 
 import LoginScreen from '../screens/LoginScreen';
 import ProfileScreen from '../screens/Tabs/ProfileScreen';
@@ -12,16 +12,15 @@ import ArtistProfileScreen from '../screens/Stack/ArtistProfileScreen';
 import TrackAnalysisScreen from '../screens/Stack/TrackAnalysisScreen';
 import PlaylistDetailScreen from '../screens/Stack/PlaylistDetailScreen';
 
-import { Platform, SafeAreaView, Button, View } from 'react-native';
+import { SafeAreaView, View } from 'react-native';
 import AuthButton from '../components/UI/AuthButton';
 import { useDispatch } from 'react-redux';
 import { logout } from '../../store/actions/auth';
 
 import Colors from '../constants/Colors';
-import { FontAwesome, Entypo, Ionicons, MaterialCommunityIcons } from '@expo/vector-icons';
+import { FontAwesome, Entypo } from '@expo/vector-icons';
 import { createMaterialBottomTabNavigator } from 'react-navigation-material-bottom-tabs';
 import { createDrawerNavigator, DrawerItems } from 'react-navigation-drawer';
-import { color } from 'react-native-reanimated';
 
 
 

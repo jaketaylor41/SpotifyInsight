@@ -1,7 +1,7 @@
-import React, { useState, useEffect, useCallback, useRef } from 'react';
+import React, { useState, useEffect } from 'react';
 
 import { getRecentlyPlayed, getCurrentlyPlaying, getTrackFeatures, getTrack } from '../../../store/actions/spotifyData';
-import { useSelector, useDispatch } from 'react-redux';
+import { useDispatch } from 'react-redux';
 
 import { View, Text, StyleSheet, ActivityIndicator, RefreshControl } from 'react-native';
 import Colors from '../../constants/Colors';
@@ -21,8 +21,6 @@ const RecentScreen = props => {
 	const dispatch = useDispatch();
 
 	useEffect(() => {
-		console.log('Recent Screen Mounted Current')
-
 		setIsLoading(true);
 		getData().then(() => {
 			setIsLoading(false)

@@ -1,13 +1,12 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { getTopTracksLong, getTopTracksMedium, getTopTracksShort, getTrack, getTrackFeatures } from '../../../store/actions/spotifyData';
 import { useSelector, useDispatch, } from 'react-redux';
-import { View, Text, StyleSheet, ActivityIndicator } from 'react-native';
+import { View, StyleSheet, ActivityIndicator } from 'react-native';
 import Colors from '../../constants/Colors';
-import { FlatList, ScrollView } from 'react-native-gesture-handler';
+import { FlatList } from 'react-native-gesture-handler';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import TopTracksList from '../../components/TopTracksScreen/TopTracksList';
 import TopTracksHeader from '../../components/TopTracksScreen/TopTracksHeader';
-import AsyncStorage from '@react-native-community/async-storage';
 
 
 
@@ -18,7 +17,6 @@ const TopTracksScreen = props => {
 	const [topTracks, setTopTracks] = useState(null);
 	const [activeRange, setActiveRange] = useState('long');
 	const isMountedRef = useRef(null);
-	const token = useSelector(state => state.auth.accessToken);
 
 
 	useEffect(() => {

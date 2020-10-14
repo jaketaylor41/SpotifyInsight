@@ -27,7 +27,6 @@ const LoginScreen = props => {
 			setIsLoading(true);
 			try {
 				await dispatch(action);
-				//props.navigation.navigate('Tabs');
 			} catch (err) {
 				setError(err.message);
 				setIsLoading(false);

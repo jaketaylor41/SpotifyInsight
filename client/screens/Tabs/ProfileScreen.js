@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useCallback } from 'react';
-import { useSelector, useDispatch, useRef } from 'react-redux';
+import { useSelector, useDispatch } from 'react-redux';
 
-import { View, Text, StyleSheet, ActivityIndicator, Image, Platform, RefreshControl } from 'react-native';
+import { View, Text, StyleSheet, ActivityIndicator, Platform, RefreshControl } from 'react-native';
 import { FlatList, ScrollView } from 'react-native-gesture-handler';
 import { HeaderButtons, Item } from 'react-navigation-header-buttons';
 import { SafeAreaView } from 'react-native-safe-area-context';
