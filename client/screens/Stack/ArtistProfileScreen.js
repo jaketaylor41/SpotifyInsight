@@ -45,10 +45,7 @@ const ArtistProfileScreen = props => {
 		}
 		
 	}, [setIsFollowing]);
-	
-	console.log('==================')
-	console.log(following)
-	console.log('==================')
+
 
 	const selectTrackHandler = async (id) => {
 		await dispatch(getTrackFeatures(id));
